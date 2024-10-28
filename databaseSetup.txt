@@ -1,0 +1,86 @@
+CREATE DATABASE issueSystem;
+USE issueSystem
+
+CREATE TABLE users(
+	username VARCHAR(20) PRIMARY KEY,
+	password VARCHAR(50) NOT NULL,
+	name VARCHAR(40)
+);
+
+CREATE TABLE managers_subordinates(
+	manager VARCHAR(20),
+	subordinate VARCHAR(20),
+	
+	CONSTRAINT ms_pk PRIMARY KEY (manager, subordinate),
+	CONSTRAINT m_fk FOREIGN KEY (manager)
+	REFERENCES users (username),
+	CONSTRAINT s_fk FOREIGN KEY (subordinate)
+	REFERENCES users (username)
+);
+
+CREATE TABLE categories(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	category VARCHAR(20) UNIQUE NOT NULL
+);
+
+
+CREATE TABLE statuses(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	status VARCHAR(20) UNIQUE NOT NULL
+);
+
+INSERT INTO statuses VALUES (1, "backlog");
+
+CREATE TABLE issues(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	creator VARCHAR(20) NOT NULL,
+	assiginee VARCHAR(20),
+	title TEXT NOT NULL,
+	description TEXT,
+	start DATE NOT NULL,
+	end DATE,
+	category INT NOT NULL,
+	status INT NOT NULL DEFAULT 1,
+	
+	CONSTRAINT c_fk FOREIGN KEY (creator)
+	REFERENCES users (username),
+	CONSTRAINT a_fk FOREIGN KEY (assiginee)
+	REFERENCES users (username),
+	CONSTRAINT cat_fk FOREIGN KEY (category)
+	REFERENCES categories (id),
+	CONSTRAINT stat_fk FOREIGN KEY (status)
+	REFERENCES statuses (id)
+);
+
+CREATE TABLE members_issues(
+	member VARCHAR(20),
+	issue INT,
+	
+	CONSTRAINT mi_pk PRIMARY KEY (member, issue),
+	CONSTRAINT i_fk FOREIGN KEY (issue) 
+	REFERENCES issues (id),
+	CONSTRAINT mem_fk FOREIGN KEY (member) 
+	REFERENCES users (username)
+);
+
+CREATE TABLE subissues(
+	member VARCHAR(20),
+	issue INT, 
+	CONSTRAINT subi_fk FOREIGN KEY (issue)
+	REFERENCES issues (id),
+	CONSTRAINT submem_fk FOREIGN KEY (member)
+	REFERENCES users (username)
+);
+
+INSERT INTO categories (category)
+VALUES ("bug"),
+		("feature"),
+		("enhancement"),
+		("testing");
+		
+INSERT INTO statuses (status)
+VALUES ("in progress"),
+		("done"),
+		("late"),
+		("cancled");
+		
