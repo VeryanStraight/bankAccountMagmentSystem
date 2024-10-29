@@ -3,13 +3,13 @@ package com.veryan.springbootapi.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Entity(name = "categories")
+@Entity(name = "transaction_type")
 @Data
-public class Category {
+public class TransactionType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    int id;
+    private int id;
 
     @Column
-    String category;
+    private String type;
 }

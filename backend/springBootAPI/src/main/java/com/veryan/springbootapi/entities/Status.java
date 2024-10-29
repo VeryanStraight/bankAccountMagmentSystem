@@ -8,8 +8,8 @@ import lombok.Data;
 public class Status {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    int id;
+    private int id;
 
     @Column
-    String status;
+    private String status;
 }

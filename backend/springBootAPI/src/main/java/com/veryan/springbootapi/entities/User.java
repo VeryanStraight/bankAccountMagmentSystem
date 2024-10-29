@@ -17,19 +17,10 @@ public class User {
     @Column
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-            name = "managers_subordinates",
-            joinColumns = {@JoinColumn(name = "manager")},
-            inverseJoinColumns = {@JoinColumn(name = "subordinate")}
-    )
-    private List<User> subordinates;
+    @Column
+    private String email;
 
-    @ManyToMany
-    @JoinTable(
-            name = "members_issues",
-            joinColumns = {@JoinColumn(name = "member")},
-            inverseJoinColumns = {@JoinColumn(name = "issue")}
-    )
-    List<Issue> issues;
+    @Column
+    private String phone;
+
 }
