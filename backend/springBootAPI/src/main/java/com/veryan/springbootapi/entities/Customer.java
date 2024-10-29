@@ -21,4 +21,7 @@ public class Customer {
 
     @Column
     private String address;
+
+    @Column
+    private String password;
 }

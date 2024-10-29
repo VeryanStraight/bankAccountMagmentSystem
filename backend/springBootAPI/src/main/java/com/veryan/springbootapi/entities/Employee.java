@@ -13,4 +13,7 @@ public class Employee {
     @OneToOne
     @JoinColumn(name = "user")
     private User user;
+
+    @Column
+    private String password;
 }
