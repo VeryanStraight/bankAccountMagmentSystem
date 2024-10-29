@@ -3,7 +3,7 @@ package com.veryan.springbootapi.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Entity
+@Entity(name = "categories")
 @Data
 public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)

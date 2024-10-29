@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@Entity
+@Entity(name = "issues")
 public class Issue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -17,7 +17,7 @@ public class Issue {
     @JoinColumn(name = "creator", nullable = false)
     private User creator;
     @ManyToOne
-    @JoinColumn(name = "assiginee")
+    @JoinColumn(name = "assignee")
     private User assiginee;
     @Column(nullable = false)
     private String title;
@@ -36,9 +36,9 @@ public class Issue {
 
     @ManyToMany
     @JoinTable(
-            name = "subissues",
+            name = "subIssues",
             joinColumns = {@JoinColumn(name = "issue")},
-            inverseJoinColumns = {@JoinColumn(name = "subissue")}
+            inverseJoinColumns = {@JoinColumn(name = "subIssue")}
     )
     List<Issue> subIssues;
 

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
-@Entity
+@Entity(name = "statuses")
 public class Status {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

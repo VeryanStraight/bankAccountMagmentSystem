@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.util.List;
 
-@Entity
+@Entity(name = "users")
 @Data
 public class User {
     @Id

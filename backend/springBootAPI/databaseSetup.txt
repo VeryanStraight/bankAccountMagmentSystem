@@ -34,7 +34,7 @@ INSERT INTO statuses VALUES (1, "backlog");
 CREATE TABLE issues(
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	creator VARCHAR(20) NOT NULL,
-	assiginee VARCHAR(20),
+	assignee VARCHAR(20),
 	title TEXT NOT NULL,
 	description TEXT,
 	start DATE NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE issues(
 	
 	CONSTRAINT c_fk FOREIGN KEY (creator)
 	REFERENCES users (username),
-	CONSTRAINT a_fk FOREIGN KEY (assiginee)
+	CONSTRAINT a_fk FOREIGN KEY (assignee)
 	REFERENCES users (username),
 	CONSTRAINT cat_fk FOREIGN KEY (category)
 	REFERENCES categories (id),
@@ -64,12 +64,12 @@ CREATE TABLE members_issues(
 );
 
 CREATE TABLE subissues(
-	member VARCHAR(20),
-	issue INT, 
-	CONSTRAINT subi_fk FOREIGN KEY (issue)
+	issue INT,
+	subissue INT, 
+	CONSTRAINT issue_fk FOREIGN KEY (issue)
 	REFERENCES issues (id),
-	CONSTRAINT submem_fk FOREIGN KEY (member)
-	REFERENCES users (username)
+	CONSTRAINT subissue_fk FOREIGN KEY (issue)
+	REFERENCES issues (id)
 );
 
 INSERT INTO categories (category)
@@ -84,3 +84,31 @@ VALUES ("in progress"),
 		("late"),
 		("cancled");
 		
+INSERT INTO users
+VALUES ("username", "password", "name"),
+		("sasmith", "12345", "sam"),
+		("tojhonson", "abcd", "tom"),
+		("jabaker", "1q2w3e", "jake"),
+		("sacarp", "qwerty", "sally");
+		
+INSERT INTO managers_subordinates
+VALUES ("sacarp", "jabaker"),
+		("sacarp", "tojhonson"),
+		("tojhonson", "username");
+		
+INSERT INTO issues (creator, assignee, title, description, start, end, status, category)
+VALUES ("sacarp", "tojhonson", "title", "discription", '2024-10-01', '2024-11-01', 1, 2),
+		("sacarp", "sacarp", "add data", null, '2024-10-01', '2024-10-02', 3, 3),
+		("sasmith", "sasmith", "make code", "do java", '2024-10-01', '2024-12-02', 2, 4),
+		("sasmith", "sasmith", "make gui", "do wireframe", '2024-10-01', '2024-12-02', 4, 2),
+		("username", "username", "todo", "do thing", '2024-02-01', '2024-05-02', 5, 5);
+		
+INSERT INTO members_issues
+VALUES ("jabaker", 6),
+		("username", 6),
+		("jabaker", 10);
+		
+INSERT INTO subissues
+VALUES (6, 7),
+		(7, 8),
+		(6, 9);
