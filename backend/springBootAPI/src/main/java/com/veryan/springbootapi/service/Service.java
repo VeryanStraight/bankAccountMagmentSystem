@@ -5,18 +5,49 @@ import com.veryan.springbootapi.entities.*;
 import java.util.List;
 
 public interface Service {
-    User createUser(User user);
-    Customer createCustomer(Customer customer);
-    Employee createEmployee(Employee employee);
-    Account createAccount(Account account);
-    Transaction createTransaction(Transaction transaction);
-    User getUserByUsername(String username);
-    Customer getCustomerByUsername(String username);
-    List<Transaction> getTransactionByAccountId(int id);
-    List<Account> getAccountByCustomerId(int id);
-    void updateUser(User user, int id);
-    void updateCustomer(Customer customer, int id);
-    void updateAccount(Account account, int id);
+    /**
+     * creates a new user
+     *
+     * @param user the user to create
+     * @return the created user, or null if it fails
+     */
+    User createUser(User user) throws AlreadyExistsException;
+
+    /**
+     * creates a customer. there must be an existing user for the customer
+     * @param customer the customer to create
+     * @return the created customer, or null if it fails
+     */
+    Customer createCustomer(Customer customer) throws AlreadyExistsException, NoSuchRecordException;
+
+    /**
+     * creates an employee. there must be an existing user for the customer
+     * @param employee the employee to create
+     * @return the created employee, or null if it fails
+     */
+    Employee createEmployee(Employee employee) throws AlreadyExistsException, NoSuchRecordException;
+
+    /**
+     * create an account for a customer
+     * @param account the account to create
+     * @return the created account, or null if it fails
+     */
+    Account createAccount(Account account) throws AlreadyExistsException, NoSuchRecordException;
+
+    /**
+     * creates and does a transaction
+     * @param transaction the transaction to do
+     * @return the completed transaction
+     */
+    Transaction createTransaction(Transaction transaction) throws AlreadyExistsException, InvalidInputException, NoSuchRecordException;
+    User getUserByUsername(String username) throws NoSuchRecordException;
+    Customer getCustomerByUsername(String username) throws NoSuchRecordException;
+    Employee getEmployeeByUsername(String username) throws NoSuchRecordException;
+    List<Transaction> getTransactionByAccountId(int id) throws NoSuchRecordException;
+    List<Account> getAccountByCustomerId(int id) throws NoSuchRecordException;
+    void updateUser(User user, String username) throws NoSuchRecordException;
+    void updateCustomer(Customer customer, int id) throws NoSuchRecordException;
+    void updateAccount(Account account, int id) throws NoSuchRecordException;
     void deleteUserByUsername(String username);
     void deleteCustomerById(int id);
     void deleteEmployeeById(int id);

@@ -2,6 +2,8 @@ package com.veryan.springbootapi.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Entity(name = "accounts")
 @Data
+@EqualsAndHashCode
+@ToString
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +42,19 @@ public class Account {
             inverseJoinColumns = {@JoinColumn(name = "customer")}
     )
     private List<Customer> beneficiaries;
+
+    public Account(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Account() {}
+
+    public void addAmount(BigDecimal amount){
+        balance = balance.add(amount);
+    }
+
+    public void subtractAmount(BigDecimal amount){
+        balance = balance.subtract(amount);
+    }
+
 }
