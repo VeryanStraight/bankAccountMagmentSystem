@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode
 @ToString
+@DynamicUpdate
 public class User {
     @Id
     private String username;
@@ -27,5 +29,9 @@ public class User {
     public User(String username, String name) {
         this.username = username;
         this.name = name;
+    }
+
+    public User() {
+
     }
 }

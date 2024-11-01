@@ -3,14 +3,18 @@ package com.veryan.springbootapi.service;
 import com.veryan.springbootapi.entities.*;
 import com.veryan.springbootapi.reposities.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+//todo change wording of from/to accounts
 @Service
 public class ServiceImpl implements com.veryan.springbootapi.service.Service {
     AccountRepository accounts;
@@ -44,46 +48,48 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
     }
 
     @Override
-    public Customer createCustomer(Customer customer) throws AlreadyExistsException, NoSuchRecordException {
-        //todo is there a more efficient way than using 3 query's
+    public Customer createCustomer(Customer customer) throws AlreadyExistsException, InvalidInputException {
         Optional<Customer> c = customers.findById(customer.getId());
         if(c.isPresent()){throw new AlreadyExistsException(customer.toString());}
 
-        User user = customer.getUser();
-        Optional<User> u = users.findById(user.getUsername());
-        if(u.isEmpty()){throw new NoSuchRecordException("no such user: "+ user);}
+        if(customer.getCreated_date() == null){
+            customer.setCreated_date(LocalDateTime.now());
+        }
 
-        return customers.save(customer);
+        try {
+            return customers.save(customer);
+        } catch (DataIntegrityViolationException e){
+            throw new InvalidInputException("failed to add customer", e);
+        }
     }
 
     @Override
-    public Employee createEmployee(Employee employee) throws AlreadyExistsException, NoSuchRecordException {
-        //todo is there a more efficient way than using 3 query's
-        Optional<Employee> e = employees.findById(employee.getId());
-        if(e.isPresent()){throw new AlreadyExistsException(employee.toString());}
+    public Employee createEmployee(Employee employee) throws AlreadyExistsException, InvalidInputException {
+        Optional<Employee> emp = employees.findById(employee.getId());
+        if(emp.isPresent()){throw new AlreadyExistsException(employee.toString());}
 
-        User user = employee.getUser();
-        Optional<User> u = users.findById(user.getUsername());
-        if(u.isEmpty()){throw new NoSuchRecordException("no such user: "+ user);}
-
-        return employees.save(employee);
+        try {
+            return employees.save(employee);
+        } catch (DataIntegrityViolationException e){
+            throw new InvalidInputException("failed to add employee", e);
+        }
     }
 
     @Override
-    public Account createAccount(Account account) throws AlreadyExistsException, NoSuchRecordException {
-        //todo what if nonexistent customer
+    public Account createAccount(Account account) throws AlreadyExistsException, InvalidInputException {
         Optional<Account> a = accounts.findById(account.getId());
         if(a.isPresent()){throw new AlreadyExistsException(account.toString());}
 
-        Customer customer = account.getCustomer();
-        Optional<Customer> c = customers.findById(customer.getId());
-        if(c.isEmpty()){throw new NoSuchRecordException("no such user: "+ customer);}
+        //todo: avoid hard coding
+        account.setBalance(BigDecimal.ZERO);
+        account.setStart(LocalDateTime.now());
+        account.setStatus(statuses.findById(1).get());
 
-        Status status = account.getStatus();
-        Optional<Status> s = statuses.findById(status.getId());
-        if(c.isEmpty()){throw new NoSuchRecordException("no such user: "+ customer);}
-
-        return accounts.save(account);
+        try {
+            return accounts.save(account);
+        } catch (DataIntegrityViolationException e){
+            throw new InvalidInputException("failed to add account", e);
+        }
     }
 
     @Override
@@ -92,29 +98,45 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
 
         BigDecimal amount = transaction.getAmount();
         String type = transaction.getType().getType();
+        Account toAccount = transaction.getToAccount();
+        Account fromAccount = transaction.getFromAccount();
+        if(toAccount != null){
+            Optional<Account> a = accounts.findById(toAccount.getId());
+            if(a.isEmpty()){throw new InvalidInputException("invalid toAccount");}
+        }
+        if(fromAccount != null){
+            Optional<Account> a = accounts.findById(fromAccount.getId());
+            if(a.isEmpty()){throw new InvalidInputException("invalid fromAccount");}
+        }
+
         //ToDO somehow avoid this hard coding?
         switch (type){
             case "Deposit":
-                Account depositAccount = transaction.getToAccount();
-                depositAccount.addAmount(amount);
+                if (fromAccount == null){
+                    throw new InvalidInputException("must have from account for a deposit");
+                }
+                fromAccount.addAmount(amount);
                 try {
-                    accounts.save(depositAccount);
+                    accounts.save(fromAccount);
                 }catch (DataIntegrityViolationException e){
-                    throw new NoSuchRecordException("invalid toAccount: "+ depositAccount);
+                    throw new NoSuchRecordException("invalid toAccount: "+ toAccount, e);
                 }
                 break;
             case "Withdrawal":
-                Account withdrawalAccount = transaction.getFromAccount();
-                withdrawalAccount.addAmount(amount);
+                if (fromAccount == null){
+                    throw new InvalidInputException("must have from account for a withdrawal");
+                }
+                fromAccount.addAmount(amount);
                 try {
-                    accounts.save(withdrawalAccount);
+                    accounts.save(fromAccount);
                 }catch (DataIntegrityViolationException e){
-                    throw new NoSuchRecordException("invalid fromAccount: "+ withdrawalAccount);
+                    throw new NoSuchRecordException("invalid fromAccount: "+ fromAccount, e);
                 }
                 break;
             case "Transfer":
-                Account toAccount = transaction.getToAccount();
-                Account fromAccount = transaction.getFromAccount();
+                if (toAccount == null || fromAccount==null){
+                    throw new InvalidInputException("must have to and from account for a transfer");
+                }
                 toAccount.addAmount(amount);
                 fromAccount.subtractAmount(amount);
                 try {
@@ -122,7 +144,7 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
                     accounts.save(toAccount);
                     accounts.save(fromAccount);
                 }catch (DataIntegrityViolationException e){
-                    throw new NoSuchRecordException("invalid toAccount or fromAccount");
+                    throw new NoSuchRecordException("invalid toAccount or fromAccount", e);
                 }
                 break;
             default:
@@ -130,6 +152,9 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
         }
 
         try {
+            if(transaction.getDatetime() == null) {
+                transaction.setDatetime(LocalDate.now());
+            }
             return transactions.save(transaction);
         }catch (DataIntegrityViolationException e){
             throw new AlreadyExistsException("could not save: "+ transaction);
@@ -137,62 +162,80 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
     }
 
     @Override
-    public User getUserByUsername(String username) {
-        return null;
+    public User getUserByUsername(String username) throws NoSuchRecordException {
+        Optional<User> user = users.findById(username);
+        if(user.isEmpty()){throw new NoSuchRecordException("no user found");}
+        return user.get();
     }
 
     @Override
-    public Customer getCustomerByUsername(String username) {
-        return null;
+    public Customer getCustomerByUsername(String username) throws NoSuchRecordException {
+        Optional<Customer> customer = customers.findByUser_Username(username);
+        if(customer.isEmpty()){throw new NoSuchRecordException("no such customer"+ username);}
+        return customer.get();
     }
 
     @Override
-    public Employee getEmployeeByUsername(String username) {
-        return null;
+    public Employee getEmployeeByUsername(String username) throws NoSuchRecordException {
+        Optional<Employee> employee = employees.findByUser_Username(username);
+        if(employee.isEmpty()){throw new NoSuchRecordException("no such customer"+ username);}
+        return employee.get();
     }
 
     @Override
-    public List<Transaction> getTransactionByAccountId(int id) {
-        return null;
+    public List<Transaction> getTransactionsByAccountId(int id) {
+        return transactions.getTransactionByFromAccount_Id(id);
     }
 
     @Override
     public List<Account> getAccountByCustomerId(int id) {
-        return null;
+        return accounts.getAccountByCustomer_Id(id);
     }
 
     @Override
-    public void updateUser(User user, String username) {
-        //TODO: add @DynamicUpdate to the User entity?
+    public void updateUser(User user) throws NoSuchRecordException {
+        String username = user.getUsername();
+        if(users.findById(username).isEmpty()){throw new NoSuchRecordException(username);}
+
+        users.save(user);
     }
 
     @Override
-    public void updateCustomer(Customer customer, int id) {
+    public void updateCustomer(Customer customer) throws NoSuchRecordException {
+        int id = customer.getId();
+        if(customers.findById(id).isEmpty()){throw new NoSuchRecordException(id+"");}
 
+        customers.save(customer);
     }
 
     @Override
-    public void updateAccount(Account account, int id) {
+    public void updateAccount(Account account) throws NoSuchRecordException {
+        int id = account.getId();
+        if(accounts.findById(id).isEmpty()){throw new NoSuchRecordException(id+"");}
 
+        accounts.save(account);
     }
 
     @Override
     public void deleteUserByUsername(String username) {
-
+        //todo: have to delete any customers and employees first
+        customers.deleteByUser_Username(username);
+        employees.deleteByUser_Username(username);
+        users.deleteById(username);
     }
 
     @Override
     public void deleteCustomerById(int id) {
-
+        customers.deleteById(id);
     }
 
     @Override
     public void deleteEmployeeById(int id) {
-
+        customers.deleteById(id);
     }
 
     @Override
     public void deleteAccountById(int id) {
-
+        accounts.deleteById(id);
     }
 }

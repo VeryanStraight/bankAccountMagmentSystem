@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode
 @ToString
+@DynamicUpdate
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

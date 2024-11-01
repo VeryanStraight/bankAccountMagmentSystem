@@ -9,6 +9,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,13 +43,14 @@ class ServiceImplTest {
         try {
             User createdUser = service.createUser(user);
 
-            Customer customer = new Customer(createdUser, "testpassword");
+            Customer customer = new Customer(createdUser, "testpassword", "testaddress");
+            customer.setCreated_date(LocalDateTime.now());
 
             Customer createdCustomer = service.createCustomer(customer);
             Customer foundCustomer = service.getCustomerByUsername("testusername");
 
             assertEquals(createdCustomer, foundCustomer);
-        } catch (AlreadyExistsException | NoSuchRecordException e) {
+        } catch (AlreadyExistsException | NoSuchRecordException | InvalidInputException e) {
             fail();
         }
     }
@@ -64,24 +66,23 @@ class ServiceImplTest {
             Employee foundEmployee = service.getEmployeeByUsername("testusername");
 
             assertEquals(createdEmployee, foundEmployee);
-        } catch (AlreadyExistsException | NoSuchRecordException e) {
+        } catch (AlreadyExistsException | NoSuchRecordException | InvalidInputException e) {
             fail();
         }
     }
 
     @Test
     void createAccountTest() {
-        Customer customer = null;
         try {
-            customer = service.getCustomerByUsername("sasmith");
+            Customer customer = service.getCustomerByUsername("sasmith");
             Account account = new Account(customer);
             Account createdAccount = service.createAccount(account);
 
             List<Account> foundAccounts = service.getAccountByCustomerId(customer.getId());
 
             assertTrue(foundAccounts.contains(createdAccount));
-        } catch (NoSuchRecordException | AlreadyExistsException e) {
-            fail();
+        } catch (NoSuchRecordException | AlreadyExistsException | InvalidInputException e) {
+            fail(e);
         }
 
     }
@@ -97,17 +98,21 @@ class ServiceImplTest {
             Account fromAccount = service.getAccountByCustomerId(2).get(0);
             transaction.setToAccount(toAccount);
             transaction.setFromAccount(fromAccount);
+            BigDecimal toAmount = toAccount.getBalance();
+            BigDecimal fromAmount = fromAccount.getBalance();
 
             Transaction createdTransaction = service.createTransaction(transaction);
-            Transaction foundTransaction = service.getTransactionByAccountId(fromAccount.getId()).get(0);
+            Transaction foundTransaction = service.getTransactionsByAccountId(fromAccount.getId()).get(0);
             assertEquals(createdTransaction, foundTransaction);
 
             Account toAccountAfter = service.getAccountByCustomerId(1).get(0);
             Account fromAccountAfter = service.getAccountByCustomerId(2).get(0);
 
             BigDecimal ten = new BigDecimal("10");
-            assertEquals(toAccountAfter.getBalance().add(ten), toAccount.getBalance());
-            assertEquals(fromAccountAfter.getBalance().subtract(ten), toAccount.getBalance());
+
+
+            assertEquals(toAccountAfter.getBalance().subtract(ten), toAmount);
+            assertEquals(fromAccountAfter.getBalance().add(ten), fromAmount);
         } catch (NoSuchRecordException | AlreadyExistsException | InvalidInputException e) {
             fail();
         }
@@ -147,7 +152,7 @@ class ServiceImplTest {
             transaction.setToAccount(toAccount);
             transaction.setFromAccount(fromAccount);
             
-            Transaction foundTransaction = service.getTransactionByAccountId(2).get(0);
+            Transaction foundTransaction = service.getTransactionsByAccountId(2).get(0);
             assertNotEquals(null, foundTransaction);
         } catch (NoSuchRecordException e) {
             fail();
@@ -168,8 +173,9 @@ class ServiceImplTest {
     void updateUserTest() {
         try {
             User user = service.getUserByUsername("sasmith");
-            user.setEmail("new email");
-            service.updateUser(user, user.getUsername());
+            User newuser = new User(user.getUsername(), user.getName());
+            newuser.setEmail("new email");
+            service.updateUser(newuser);
             user = service.getUserByUsername("sasmith");
             assertEquals("new email", user.getEmail());
         } catch (NoSuchRecordException e) {
@@ -181,8 +187,9 @@ class ServiceImplTest {
     void updateCustomerTest() {
         try {
             Customer customer = service.getCustomerByUsername("sasmith");
-            customer.setPassword("new password");
-            service.updateCustomer(customer, customer.getId());
+            Customer newCustomer = new Customer(customer.getUser(), customer.getPassword(), customer.getAddress());
+            newCustomer.setPassword("new password");
+            service.updateCustomer(newCustomer);
             customer = service.getCustomerByUsername("sasmith");
             assertEquals("new password", customer.getPassword());
         } catch (NoSuchRecordException e) {
@@ -194,8 +201,9 @@ class ServiceImplTest {
     void updateAccountTest() {
         try {
             Account account = service.getAccountByCustomerId(1).get(0);
-            account.setBalance(new BigDecimal("10"));
-            service.updateAccount(account, account.getId());
+            Account newAccount = new Account(account.getCustomer());
+            newAccount.setBalance(new BigDecimal("10"));
+            service.updateAccount(newAccount);
             Account foundAccount = service.getAccountByCustomerId(1).get(0);
             assertEquals(foundAccount.getBalance(), new BigDecimal("10"));
         } catch (NoSuchRecordException e) {
@@ -208,6 +216,7 @@ class ServiceImplTest {
         service.deleteUserByUsername("sasmith");
         try {
             service.getUserByUsername("sasmith");
+            fail();
         } catch (NoSuchRecordException ignored) {
         }
     }
@@ -217,15 +226,19 @@ class ServiceImplTest {
         service.deleteCustomerById(1);
         try {
             service.getCustomerByUsername("sasmith");
+            fail();
         } catch (NoSuchRecordException ignored) {
-        };
+        }
     }
 
     @Test
     void deleteEmployeeByIdTest() {
-        service.deleteEmployeeById(1);
         try {
+            Employee e = service.getEmployeeByUsername("username");
+            service.deleteEmployeeById(e.getId());
+
             service.getEmployeeByUsername("username");
+            fail();
         } catch (NoSuchRecordException ignored) {
         }
     }

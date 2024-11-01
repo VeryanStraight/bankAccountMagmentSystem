@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
-    List<Account> getAccountByCustomer(Customer customer);
+    List<Account> getAccountByCustomer_Id(int id);
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode
 @ToString
+@DynamicUpdate
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +31,10 @@ public class Customer {
     @Column
     private String password;
 
-    public Customer(User user, String password) {
+    public Customer(User user, String password, String address) {
         this.user = user;
         this.password = password;
+        this.address = address;
     }
 
     public Customer() {
