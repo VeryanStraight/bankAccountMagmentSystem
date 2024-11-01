@@ -183,59 +183,68 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
     }
 
     @Override
-    public List<Transaction> getTransactionsByAccountId(int id) {
+    public List<Transaction> getTransactionsByAccountId(int id) throws NoSuchRecordException {
+        if(accounts.findById(id).isEmpty()){throw new NoSuchRecordException("no account: "+id);}
+
         return transactions.getTransactionByFromAccount_Id(id);
     }
 
     @Override
-    public List<Account> getAccountByCustomerId(int id) {
+    public List<Account> getAccountByCustomerId(int id) throws NoSuchRecordException {
+        if(customers.findById(id).isEmpty()){throw new NoSuchRecordException("no customer: "+id);}
+
         return accounts.getAccountByCustomer_Id(id);
     }
 
     @Override
-    public void updateUser(User user) throws NoSuchRecordException {
+    public User updateUser(User user) throws NoSuchRecordException {
         String username = user.getUsername();
         if(users.findById(username).isEmpty()){throw new NoSuchRecordException(username);}
 
-        users.save(user);
+        return users.save(user);
     }
 
     @Override
-    public void updateCustomer(Customer customer) throws NoSuchRecordException {
+    public Customer updateCustomer(Customer customer) throws NoSuchRecordException {
         int id = customer.getId();
         if(customers.findById(id).isEmpty()){throw new NoSuchRecordException(id+"");}
 
-        customers.save(customer);
+        return customers.save(customer);
     }
 
     @Override
-    public void updateAccount(Account account) throws NoSuchRecordException {
+    public Account updateAccount(Account account) throws NoSuchRecordException {
         int id = account.getId();
         if(accounts.findById(id).isEmpty()){throw new NoSuchRecordException(id+"");}
 
-        accounts.save(account);
+        return accounts.save(account);
     }
 
     @Override
-    public void deleteUserByUsername(String username) {
+    public void deleteUserByUsername(String username) throws NoSuchRecordException {
         //todo: have to delete any customers and employees first
+        if(users.findById(username).isEmpty()){throw new NoSuchRecordException(username);}
+
         customers.deleteByUser_Username(username);
         employees.deleteByUser_Username(username);
         users.deleteById(username);
     }
 
     @Override
-    public void deleteCustomerById(int id) {
+    public void deleteCustomerById(int id) throws NoSuchRecordException {
+        if(customers.findById(id).isEmpty()){throw new NoSuchRecordException(id+"");}
         customers.deleteById(id);
     }
 
     @Override
-    public void deleteEmployeeById(int id) {
+    public void deleteEmployeeById(int id) throws NoSuchRecordException {
+        if(employees.findById(id).isEmpty()){throw new NoSuchRecordException(id+"");}
         customers.deleteById(id);
     }
 
     @Override
-    public void deleteAccountById(int id) {
+    public void deleteAccountById(int id) throws NoSuchRecordException {
+        if(accounts.findById(id).isEmpty()){throw new NoSuchRecordException(id+"");}
         accounts.deleteById(id);
     }
 }

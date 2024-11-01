@@ -5,6 +5,7 @@ import com.veryan.springbootapi.entities.*;
 import java.util.List;
 
 public interface Service {
+    //todo: change some of the InvalidInputException to NoSuchRecord
     /**
      * creates a new user
      *
@@ -45,11 +46,12 @@ public interface Service {
     Employee getEmployeeByUsername(String username) throws NoSuchRecordException;
     List<Transaction> getTransactionsByAccountId(int id) throws NoSuchRecordException;
     List<Account> getAccountByCustomerId(int id) throws NoSuchRecordException;
-    void updateUser(User user) throws NoSuchRecordException;
-    void updateCustomer(Customer customer) throws NoSuchRecordException;
-    void updateAccount(Account account) throws NoSuchRecordException;
-    void deleteUserByUsername(String username);
-    void deleteCustomerById(int id);
-    void deleteEmployeeById(int id);
-    void deleteAccountById(int id);
+    User updateUser(User user) throws NoSuchRecordException;
+    Customer updateCustomer(Customer customer) throws NoSuchRecordException;
+    Account updateAccount(Account account) throws NoSuchRecordException;
+    void deleteUserByUsername(String username) throws NoSuchRecordException;
+    void deleteCustomerById(int id) throws NoSuchRecordException;
+    void deleteEmployeeById(int id) throws NoSuchRecordException;
+    void deleteAccountById(int id) throws NoSuchRecordException;
+
 }
