@@ -213,8 +213,8 @@ class ServiceImplTest {
 
     @Test
     void deleteUserByUsernameTest() {
-        service.deleteUserByUsername("sasmith");
         try {
+            service.deleteUserByUsername("sasmith");
             service.getUserByUsername("sasmith");
             fail();
         } catch (NoSuchRecordException ignored) {
@@ -223,8 +223,8 @@ class ServiceImplTest {
 
     @Test
     void deleteCustomerByIdTest() {
-        service.deleteCustomerById(1);
         try {
+            service.deleteCustomerById(1);
             service.getCustomerByUsername("sasmith");
             fail();
         } catch (NoSuchRecordException ignored) {
