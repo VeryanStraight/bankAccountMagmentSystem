@@ -34,7 +34,6 @@ const Profile = ({ username }: Props) => {
 
   return (
     <div>
-      <CustomerNav />
       <h2>Profile</h2>
       {customer ? (
         <>

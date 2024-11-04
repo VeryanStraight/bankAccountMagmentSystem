@@ -1,11 +1,9 @@
 package com.veryan.springbootapi.controller;
 import com.veryan.springbootapi.entities.*;
-import com.veryan.springbootapi.reposities.*;
 import com.veryan.springbootapi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,9 +66,16 @@ public class MainController {
     @PostMapping("/transaction")
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction){
         try {
+            System.out.println("in create transaction");
+            System.out.println(transaction.getFromAccount());
             Transaction createdTransaction = service.createTransaction(transaction);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
+            System.out.println(createdTransaction);
+            ResponseEntity<Transaction> r = ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
+            System.out.println(r);
+            return r;
         } catch (AlreadyExistsException | InvalidInputException | NoSuchRecordException e) {
+            System.out.println("in catch");
+            System.out.println(e.getMessage());
             //if a duplicate key or non-existent foreign key
             //if missing to/from account when they are needed based on transaction type
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -113,7 +118,7 @@ public class MainController {
         }
     }
 
-    @GetMapping("/customer{id}/account")
+    @GetMapping("/customer/{id}/account")
     public ResponseEntity<List<Account>> getAccountByCustomerId(@PathVariable int id){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(service.getAccountByCustomerId(id));

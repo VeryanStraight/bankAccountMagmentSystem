@@ -1,3 +1,4 @@
+import CustomerNav from "./CustomerNav";
 import Navbar from "./CustomerNav";
 import Profile from "./Profile";
 
@@ -7,8 +8,7 @@ const CustomerDashboard = () => {
 
   return (
     <div>
-      {/* <Navbar /> */}
-      <Profile username={username} />
+      <CustomerNav />
     </div>
   );
 };

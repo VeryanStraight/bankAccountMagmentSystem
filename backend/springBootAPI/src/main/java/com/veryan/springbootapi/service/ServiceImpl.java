@@ -96,17 +96,23 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
     @Transactional
     public Transaction createTransaction(Transaction transaction) throws AlreadyExistsException, InvalidInputException, NoSuchRecordException {
 
+        //todo: check the accounts statuses are not frozen
         BigDecimal amount = transaction.getAmount();
-        String type = transaction.getType().getType();
+        Optional<TransactionType> transactionType = transactionTypes.findById(transaction.getType().getId());
+        if(transactionType.isEmpty()){throw new InvalidInputException("invalid transaction type");}
+        String type = transactionType.get().getType();
+
         Account toAccount = transaction.getToAccount();
         Account fromAccount = transaction.getFromAccount();
         if(toAccount != null){
             Optional<Account> a = accounts.findById(toAccount.getId());
             if(a.isEmpty()){throw new InvalidInputException("invalid toAccount");}
+            toAccount = a.get();
         }
         if(fromAccount != null){
             Optional<Account> a = accounts.findById(fromAccount.getId());
             if(a.isEmpty()){throw new InvalidInputException("invalid fromAccount");}
+            fromAccount = a.get();
         }
 
         //ToDO somehow avoid this hard coding?
