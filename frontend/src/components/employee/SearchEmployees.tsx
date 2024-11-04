@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Employee } from "./Employee";
+import { Employee } from "../Employee";
 import axios, { AxiosError } from "axios";
 import EmployeeDisplay from "./EmployeeDisplay";
 
