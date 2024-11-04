@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/accountSystem")
+@CrossOrigin(origins = "http://localhost:5174")
 public class MainController {
     Service service;
 
@@ -119,6 +120,11 @@ public class MainController {
         } catch (NoSuchRecordException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("/transactiontypes")
+    public ResponseEntity<List<TransactionType>> getTransactionTypes(){
+        return ResponseEntity.status(HttpStatus.OK).body(service.getTransactionTypes());
     }
 
     @PatchMapping("/user/{username}")
