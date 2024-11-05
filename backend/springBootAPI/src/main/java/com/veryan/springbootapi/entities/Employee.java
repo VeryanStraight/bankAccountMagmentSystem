@@ -17,7 +17,7 @@ public class Employee {
     private int id;
 
     @OneToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "username")
     private User user;
 
     @Column

@@ -44,7 +44,7 @@ class ServiceImplTest {
             User createdUser = service.createUser(user);
 
             Customer customer = new Customer(createdUser, "testpassword", "testaddress");
-            customer.setCreated_date(LocalDateTime.now());
+            customer.setCreatedDate(LocalDateTime.now());
 
             Customer createdCustomer = service.createCustomer(customer);
             Customer foundCustomer = service.getCustomerByUsername("testusername");
@@ -96,13 +96,16 @@ class ServiceImplTest {
         try {
             Account toAccount = service.getAccountByCustomerId(1).get(0);
             Account fromAccount = service.getAccountByCustomerId(2).get(0);
+            System.out.println(toAccount);
+            System.out.println(fromAccount);
             transaction.setToAccount(toAccount);
             transaction.setFromAccount(fromAccount);
             BigDecimal toAmount = toAccount.getBalance();
             BigDecimal fromAmount = fromAccount.getBalance();
 
             Transaction createdTransaction = service.createTransaction(transaction);
-            Transaction foundTransaction = service.getTransactionsByAccountId(fromAccount.getId()).get(0);
+            List<Transaction> t = service.getTransactionsByAccountId(fromAccount.getId());
+            Transaction foundTransaction = service.getTransactionsByAccountId(fromAccount.getId()).get(2);
             assertEquals(createdTransaction, foundTransaction);
 
             Account toAccountAfter = service.getAccountByCustomerId(1).get(0);
@@ -144,15 +147,8 @@ class ServiceImplTest {
 
     @Test
     void getTransactionByAccountIdTest() {
-        TransactionType type = new TransactionType(3, "Transfer");
-        Transaction transaction = new Transaction(type, new BigDecimal("10"));
         try {
-            Account toAccount = service.getAccountByCustomerId(1).get(0);
-            Account fromAccount = service.getAccountByCustomerId(2).get(0);
-            transaction.setToAccount(toAccount);
-            transaction.setFromAccount(fromAccount);
-            
-            Transaction foundTransaction = service.getTransactionsByAccountId(2).get(0);
+            Transaction foundTransaction = service.getTransactionsByAccountId(1).get(0);
             assertNotEquals(null, foundTransaction);
         } catch (NoSuchRecordException e) {
             fail();
@@ -189,6 +185,8 @@ class ServiceImplTest {
             Customer customer = service.getCustomerByUsername("sasmith");
             Customer newCustomer = new Customer(customer.getUser(), customer.getPassword(), customer.getAddress());
             newCustomer.setPassword("new password");
+            newCustomer.setId(customer.getId());
+            newCustomer.setCreatedDate(customer.getCreatedDate());
             service.updateCustomer(newCustomer);
             customer = service.getCustomerByUsername("sasmith");
             assertEquals("new password", customer.getPassword());
@@ -203,6 +201,9 @@ class ServiceImplTest {
             Account account = service.getAccountByCustomerId(1).get(0);
             Account newAccount = new Account(account.getCustomer());
             newAccount.setBalance(new BigDecimal("10"));
+            newAccount.setId(account.getId());
+            newAccount.setStart(account.getStart());
+            newAccount.setStatus(account.getStatus());
             service.updateAccount(newAccount);
             Account foundAccount = service.getAccountByCustomerId(1).get(0);
             assertEquals(foundAccount.getBalance(), new BigDecimal("10"));
@@ -224,8 +225,14 @@ class ServiceImplTest {
     @Test
     void deleteCustomerByIdTest() {
         try {
+<<<<<<< HEAD
             service.deleteCustomerById(1);
             service.getCustomerByUsername("sasmith");
+=======
+            List<Account> a = service.getAccountByCustomerId(2);
+            service.deleteCustomerById(2);
+            service.getCustomerByUsername("tojhonson");
+>>>>>>> main
             fail();
         } catch (NoSuchRecordException ignored) {
         }

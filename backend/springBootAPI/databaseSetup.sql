@@ -79,12 +79,12 @@ VALUES ("username", "password", "name"),
 		("jabaker", "1q2w3e", "jake"),
 		("sacarp", "qwerty", "sally");
 		
-INSERT INTO customers (user, address)
+INSERT INTO customers (username, address)
 VALUES ("sasmith", "sam_address"),
        ("tojhonson", "tom_address"),
        ("jabaker", "jake_address");
 
-INSERT INTO employees (user)
+INSERT INTO employees (username)
 VALUES ("username"), ("sasmith"), ("sacarp");
 
 INSERT INTO accounts (balance, customer, name, start)

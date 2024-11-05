@@ -10,14 +10,19 @@ CREATE TABLE users (
 
 CREATE TABLE employees (
                            id INT PRIMARY KEY AUTO_INCREMENT,
-                           user VARCHAR(20) NOT NULL REFERENCES users (username)
+                            password VARCHAR(50) NOT NULL,
+                           username VARCHAR(20) NOT NULL UNIQUE,
+                            FOREIGN KEY (username) REFERENCES users (username)
 );
 
 CREATE TABLE customers (
                            id INT PRIMARY KEY AUTO_INCREMENT,
-                           user VARCHAR(20) NOT NULL REFERENCES users (username),
+                           password VARCHAR(50) NOT NULL,
+                           username VARCHAR(20) NOT NULL UNIQUE,
                            created_date DATETIME NOT NULL DEFAULT NOW(),
-                           address VARCHAR(100) NOT NULL
+                           address VARCHAR(100) NOT NULL,
+
+                            FOREIGN KEY (username) REFERENCES users (username)
 );
 
 CREATE TABLE transaction_type(
@@ -31,30 +36,39 @@ CREATE TABLE statuses(
                          status VARCHAR(20) UNIQUE NOT NULL
 );
 
-CREATE TABLE account(
+CREATE TABLE accounts(
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         balance DECIMAL NOT NULL DEFAULT 0,
-                        customer VARCHAR(20) NOT NULL REFERENCES customers (id),
+                        customer INT NOT NULL,
                         name VARCHAR(50),
                         start DATETIME NOT NULL DEFAULT NOW(),
-                        status INT NOT NULL DEFAULT 1 REFERENCES statuses (id),
+                        status INT NOT NULL DEFAULT 1,
+
+                        FOREIGN KEY (customer) REFERENCES customers (id),
+                        FOREIGN KEY (status) REFERENCES statuses (id),
 
                         CONSTRAINT UNIQUE(customer, name)
 );
 
 CREATE TABLE transactions(
                              id INT AUTO_INCREMENT PRIMARY KEY,
-                             to_account INT REFERENCES accounts (id),
-                             from_account INT REFERENCES accounts(id),
-                             type INT NOT NULL REFERENCES transaction_type (id),
+                             to_account INT,
+                             from_account INT,
+                             type INT NOT NULL,
                              amount DECIMAL NOT NULL,
                              description VARCHAR(50),
-                             datetime DATETIME NOT NULL DEFAULT NOW()
+                             datetime DATETIME NOT NULL DEFAULT NOW(),
+
+                            FOREIGN KEY (to_account) REFERENCES accounts (id) ON DELETE SET NULL,
+                             FOREIGN KEY (from_account) REFERENCES accounts (id) ON DELETE SET NULL,
+                             FOREIGN KEY (type) REFERENCES transaction_type (id)
 );
 
 CREATE TABLE beneficiaries(
-                              customer INT REFERENCES customers (id),
-                              account INT REFERENCES account (id),
+                              customer INT,
+                              account INT,
                               relationship VARCHAR(40),
-                              CONSTRAINT PRIMARY KEY (customer, account)
+                              CONSTRAINT PRIMARY KEY (customer, account),
+                            FOREIGN KEY (customer) REFERENCES customers (id),
+                              FOREIGN KEY (account) REFERENCES accounts (id)
 );

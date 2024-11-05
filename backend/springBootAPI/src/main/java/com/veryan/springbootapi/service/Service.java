@@ -46,6 +46,8 @@ public interface Service {
     Employee getEmployeeByUsername(String username) throws NoSuchRecordException;
     List<Transaction> getTransactionsByAccountId(int id) throws NoSuchRecordException;
     List<Account> getAccountByCustomerId(int id) throws NoSuchRecordException;
+    Account getAccountById(int id) throws NoSuchRecordException;
+    List<TransactionType> getTransactionTypes();
     User updateUser(User user) throws NoSuchRecordException;
     Customer updateCustomer(Customer customer) throws NoSuchRecordException;
     Account updateAccount(Account account) throws NoSuchRecordException;
