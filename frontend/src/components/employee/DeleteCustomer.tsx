@@ -55,7 +55,7 @@ const DeleteCustomer = () => {
       <h2 className="mt-4">Delete Customer</h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="toAccount">
-          <Form.Label>Customer Id:</Form.Label>
+          <Form.Label>Customer username:</Form.Label>
           <Form.Control
             type="text"
             value={customerUsername ? customerUsername : ""}

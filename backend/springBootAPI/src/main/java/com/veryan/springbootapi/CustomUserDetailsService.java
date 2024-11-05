@@ -15,9 +15,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+    private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     private final EmployeeRepository employeeRepository;
     private final CustomerRepository customerRepository;
@@ -37,13 +40,17 @@ public class CustomUserDetailsService implements UserDetailsService {
             Employee employee = employeeOpt.get();
 
             Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("EMPLOYEE"));
-
-            return new CustomUserDetails(
+            logger.debug("Authenticating user: {} with password: {}", employee.getUser().getUsername(), employee.getPassword());
+            CustomUserDetails customUserDetails = new CustomUserDetails(
                     employee.getId(),
                     employee.getUser().getUsername(),
-                    employee.getPassword(),
+                    "{noop}"+employee.getPassword(),
                     authorities
             );
+            logger.debug(customUserDetails.username());
+            logger.debug(customUserDetails.password());
+
+            return customUserDetails;
         }
 
         // If not found, try the Customer table
@@ -52,13 +59,17 @@ public class CustomUserDetailsService implements UserDetailsService {
             Customer customer = customerOpt.get();
 
             Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("CUSTOMER"));
-
-            return new CustomUserDetails(
+            logger.debug("Authenticating user: {} with password: {}", customer.getUser().getUsername(), customer.getPassword());
+            CustomUserDetails customUserDetails = new CustomUserDetails(
                     customer.getId(),
                     customer.getUser().getUsername(),
-                    customer.getPassword(),
+                    "{noop}"+customer.getPassword(),
                     authorities
             );
+            logger.debug(customUserDetails.username());
+            logger.debug(customUserDetails.password());
+
+            return customUserDetails;
             //todo user cant be both user and employee
         }
 
