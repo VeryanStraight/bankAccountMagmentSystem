@@ -1,9 +1,9 @@
 import { User } from "./User";
 
 export interface Customer {
-  id: number;
-  password: string;
+  id: number | undefined;
+  password: string | undefined;
   user: User;
-  created_date: Date;
-  address: string;
+  created_date: Date | undefined;
+  address: string | undefined;
 }

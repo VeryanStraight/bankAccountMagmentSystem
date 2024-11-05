@@ -1,10 +1,9 @@
-import axios from "axios";
-import SearchEmployees from "./searchEmployees";
+import EmployeeNav from "./EmployeeNav";
 
 function EmployeeDashBoard() {
   return (
     <>
-      <SearchEmployees />
+      <EmployeeNav />
     </>
   );
 }

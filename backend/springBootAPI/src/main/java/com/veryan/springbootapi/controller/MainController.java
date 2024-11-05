@@ -20,28 +20,32 @@ public class MainController {
     }
 
 
-    @PostMapping("/user")
+    @PutMapping("/user")
     public ResponseEntity<User> createUser(@RequestBody User user){
         try{
+            System.out.println("in create user");
             User createdUser = service.createUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         } catch (AlreadyExistsException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
-    @PostMapping("/customer")
+    @PutMapping("/customer")
     public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer){
         try{
+            System.out.println(customer);
             Customer createdCustomer = service.createCustomer(customer);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdCustomer);
         } catch (AlreadyExistsException | InvalidInputException e) {
+            System.out.println(e.getMessage());
             //if a duplicate key or non-existent foreign key
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
-    @PostMapping("/employee")
+    @PutMapping("/employee")
     public ResponseEntity<Employee> createCustomer(@RequestBody Employee employee){
         try{
             Employee createdEmployee = service.createEmployee(employee);
@@ -52,7 +56,7 @@ public class MainController {
         }
     }
 
-    @PostMapping("/account")
+    @PutMapping("/account")
     public ResponseEntity<Account> createAccount(@RequestBody Account account){
         try {
             Account createdAccount = service.createAccount(account);
@@ -63,7 +67,7 @@ public class MainController {
         }
     }
 
-    @PostMapping("/transaction")
+    @PutMapping("/transaction")
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction){
         try {
             System.out.println("in create transaction");
@@ -127,6 +131,15 @@ public class MainController {
         }
     }
 
+    @GetMapping("/account/{id}")
+    public ResponseEntity<Account> getAccountById(@PathVariable int id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(service.getAccountById(id));
+        } catch (NoSuchRecordException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
     @GetMapping("/transactiontypes")
     public ResponseEntity<List<TransactionType>> getTransactionTypes(){
         return ResponseEntity.status(HttpStatus.OK).body(service.getTransactionTypes());
@@ -135,8 +148,13 @@ public class MainController {
     @PatchMapping("/user/{username}")
     public ResponseEntity<User> updateUser(@PathVariable String username, @RequestBody User user){
         try {
-            user.setUsername(username);
-            return ResponseEntity.status(HttpStatus.OK).body(service.updateUser(user));
+            User oldUser = service.getUserByUsername(username);
+
+            if(user.getName() != null){oldUser.setName(user.getName());}
+            if(user.getEmail() != null){oldUser.setEmail(user.getEmail());}
+            if(user.getPhone() != null){oldUser.setPhone(user.getPhone());}
+
+            return ResponseEntity.status(HttpStatus.OK).body(service.updateUser(oldUser));
         } catch (NoSuchRecordException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -145,8 +163,13 @@ public class MainController {
     @PatchMapping("/customer/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable int id, @RequestBody Customer customer){
         try {
-            customer.setId(id);
-            return ResponseEntity.status(HttpStatus.OK).body(service.updateCustomer(customer));
+            //todo let you change the user?
+            Customer oldCustomer = service.getCustomerByUsername(customer.getUser().getUsername());
+
+            if(customer.getAddress() != null){oldCustomer.setAddress(customer.getAddress());}
+            if(customer.getPassword() != null){oldCustomer.setPassword(customer.getPassword());}
+
+            return ResponseEntity.status(HttpStatus.OK).body(service.updateCustomer(oldCustomer));
         } catch (NoSuchRecordException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -155,8 +178,15 @@ public class MainController {
     @PatchMapping("/account/{id}")
     public ResponseEntity<Account> updateAccount(@PathVariable int id, @RequestBody Account account){
         try {
-            account.setId(id);
-            return ResponseEntity.status(HttpStatus.OK).body(service.updateAccount(account));
+            Account oldAccount = service.getAccountById(id);
+
+            if(account.getBalance() != null){oldAccount.setBalance(account.getBalance());}
+            if(account.getCustomer() != null){oldAccount.setCustomer(account.getCustomer());}
+            if(account.getName() != null){oldAccount.setName(account.getName());}
+            if(account.getStatus() != null){oldAccount.setStatus(account.getStatus());}
+            if(account.getBeneficiaries() != null){oldAccount.setBeneficiaries(account.getBeneficiaries());}
+
+            return ResponseEntity.status(HttpStatus.OK).body(service.updateAccount(oldAccount));
         } catch (NoSuchRecordException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }

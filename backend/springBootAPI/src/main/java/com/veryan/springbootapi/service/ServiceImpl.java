@@ -3,7 +3,6 @@ package com.veryan.springbootapi.service;
 import com.veryan.springbootapi.entities.*;
 import com.veryan.springbootapi.reposities.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +40,7 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
     @Override
     public User createUser(User user) throws AlreadyExistsException{
         Optional<User> u = users.findById(user.getUsername());
+        System.out.println(u);
         if(u.isPresent()){throw new AlreadyExistsException(user.toString());}
 
         return users.save(user);
@@ -52,9 +52,11 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
         Optional<Customer> c = customers.findById(customer.getId());
         if(c.isPresent()){throw new AlreadyExistsException(customer.toString());}
 
-        if(customer.getCreated_date() == null){
-            customer.setCreated_date(LocalDateTime.now());
+        if(customer.getCreatedDate() == null){
+            customer.setCreatedDate(LocalDateTime.now());
         }
+
+        System.out.println("before creation "+customer);
 
         try {
             return customers.save(customer);
@@ -202,6 +204,14 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
         return accounts.getAccountByCustomer_Id(id);
     }
 
+    @Override
+    public Account getAccountById(int id) throws NoSuchRecordException {
+        Optional<Account> account = accounts.findById(id);
+        if(account.isEmpty()){throw new NoSuchRecordException("no customer: "+id);}
+
+        return account.get();
+    }
+
     public List<TransactionType> getTransactionTypes(){
         return transactionTypes.findAll();
     }
@@ -248,7 +258,7 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
     @Override
     public void deleteEmployeeById(int id) throws NoSuchRecordException {
         if(employees.findById(id).isEmpty()){throw new NoSuchRecordException(id+"");}
-        customers.deleteById(id);
+        employees.deleteById(id);
     }
 
     @Override

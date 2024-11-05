@@ -106,7 +106,7 @@ const CreateTransaction = ({ username }: Props) => {
     e.preventDefault();
     try {
       console.log(transactionData);
-      const response = await axios.post(
+      const response = await axios.put(
         `http://localhost:8080/api/accountSystem/transaction`,
         transactionData
       );
