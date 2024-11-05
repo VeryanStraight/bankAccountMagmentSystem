@@ -4,24 +4,18 @@ import com.veryan.springbootapi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-<<<<<<< HEAD
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.transaction.annotation.Transactional;
-=======
->>>>>>> main
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/accountSystem")
-<<<<<<< HEAD
 @EnableMethodSecurity()
-=======
 @CrossOrigin(origins = "http://localhost:5174")
->>>>>>> main
 public class MainController {
     Service service;
 
@@ -30,7 +24,6 @@ public class MainController {
         this.service = service;
     }
 
-<<<<<<< HEAD
     /**
      * an endpoint for creating a new user
      * returns CREATED status if successful and CONFLICT if it failed due to duplicate username
@@ -39,11 +32,7 @@ public class MainController {
      * @param user the new user
      * @return the completed user
      */
-    @PostMapping("/user")
-=======
-
     @PutMapping("/user")
->>>>>>> main
     public ResponseEntity<User> createUser(@RequestBody User user){
         try{
             System.out.println("in create user");
@@ -55,7 +44,7 @@ public class MainController {
         }
     }
 
-<<<<<<< HEAD
+
     /**
      * an endpoint for creating a new customer
      * returns CREATED status if successful and CONFLICT if it failed due to duplicate key or missing user
@@ -63,10 +52,7 @@ public class MainController {
      * @param customer the new customer (if no id it is generated)
      * @return the completed user
      */
-    @PostMapping("/customer")
-=======
     @PutMapping("/customer")
->>>>>>> main
     public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer){
         try{
             System.out.println(customer);
@@ -79,7 +65,6 @@ public class MainController {
         }
     }
 
-<<<<<<< HEAD
     /**
      * an endpoint for creating a new employee
      * returns CREATED status if successful and CONFLICT if it failed due to duplicate key or missing user
@@ -87,10 +72,7 @@ public class MainController {
      * @param employee the new employee (if no id it is generated)
      * @return the completed employee
      */
-    @PostMapping("/employee")
-=======
     @PutMapping("/employee")
->>>>>>> main
     public ResponseEntity<Employee> createCustomer(@RequestBody Employee employee){
         try{
             Employee createdEmployee = service.createEmployee(employee);
@@ -101,17 +83,13 @@ public class MainController {
         }
     }
 
-<<<<<<< HEAD
     /**
      * an endpoint for creating a new account
      * returns CREATED status if successful and CONFLICT if it failed due to duplicate key or missing customer
      * @param account the new account (if no id it is generated)
      * @return the completed account
      */
-    @PostMapping("/account")
-=======
     @PutMapping("/account")
->>>>>>> main
     public ResponseEntity<Account> createAccount(@RequestBody Account account){
         try {
             Account createdAccount = service.createAccount(account);
@@ -122,7 +100,6 @@ public class MainController {
         }
     }
 
-<<<<<<< HEAD
     /**
      * an endpoint for creating a new transaction
      * returns CREATED status if successful
@@ -135,10 +112,7 @@ public class MainController {
      * @param transaction the new transaction (if no id it is generated)
      * @return the completed transaction
      */
-    @PostMapping("/transaction")
-=======
     @PutMapping("/transaction")
->>>>>>> main
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction){
         try {
             System.out.println("in create transaction");

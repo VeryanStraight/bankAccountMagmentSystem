@@ -225,14 +225,8 @@ class ServiceImplTest {
     @Test
     void deleteCustomerByIdTest() {
         try {
-<<<<<<< HEAD
-            service.deleteCustomerById(1);
-            service.getCustomerByUsername("sasmith");
-=======
-            List<Account> a = service.getAccountByCustomerId(2);
             service.deleteCustomerById(2);
             service.getCustomerByUsername("tojhonson");
->>>>>>> main
             fail();
         } catch (NoSuchRecordException ignored) {
         }
