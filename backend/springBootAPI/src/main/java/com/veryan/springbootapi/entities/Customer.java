@@ -19,11 +19,11 @@ public class Customer {
     private int id;
 
     @OneToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "username")
     private User user;
 
-    @Column
-    private LocalDateTime created_date;
+    @Column(name="created_date")
+    private LocalDateTime createdDate;
 
     @Column
     private String address;
