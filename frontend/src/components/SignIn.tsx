@@ -1,6 +1,6 @@
 // SignIn.js
 import axios, { AxiosError } from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
@@ -9,25 +9,6 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-
-  // const handleLogin = (role: string) => {
-  //   // Mock login logic: In a real app, you’d authenticate with the backend here
-  //   console.log("Logging in as:", role);
-  //   console.log("Logging in as:", username);
-  //   localStorage.setItem("userRole", role);
-  //   localStorage.setItem("username", username);
-  //   console.log("storage:", localStorage.getItem("username"));
-  //   console.log(
-  //     "Navigating to:",
-  //     role === "EMPLOYEE" ? "/employee-dashboard" : "/customer-dashboard"
-  //   );
-
-  //   if (role === "EMPLOYEE") {
-  //     navigate("/employee-dashboard");
-  //   } else if (role === "CUSTOMER") {
-  //     navigate("/customer-dashboard");
-  //   }
-  // };
 
   const handleLogin = async (role: string) => {
     try {

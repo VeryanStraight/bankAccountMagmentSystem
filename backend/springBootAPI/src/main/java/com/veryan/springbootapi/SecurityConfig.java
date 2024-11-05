@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/user/{username}").hasRole("CUSTOMER")
                         .requestMatchers("/user/{username}").hasRole("EMPLOYEE")
                         .requestMatchers("/customer/{id}").hasRole("CUSTOMER")
+                        .requestMatchers("/customer/{id}").hasRole("EMPLOYEE")
                         .requestMatchers("/account/{id}").hasRole("EMPLOYEE")
                         .requestMatchers("/account/{id}").hasRole("CUSTOMER")
                         .anyRequest().authenticated()

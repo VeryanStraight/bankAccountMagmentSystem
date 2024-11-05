@@ -39,8 +39,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (employeeOpt.isPresent()) {
             Employee employee = employeeOpt.get();
 
-            Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("EMPLOYEE"));
-            logger.debug("Authenticating user: {} with password: {}", employee.getUser().getUsername(), employee.getPassword());
+            Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_EMPLOYEE"));
+            logger.debug("Authenticating employee: {} with password: {}", employee.getUser().getUsername(), employee.getPassword());
             CustomUserDetails customUserDetails = new CustomUserDetails(
                     employee.getId(),
                     employee.getUser().getUsername(),
@@ -58,8 +58,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (customerOpt.isPresent()) {
             Customer customer = customerOpt.get();
 
-            Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("CUSTOMER"));
-            logger.debug("Authenticating user: {} with password: {}", customer.getUser().getUsername(), customer.getPassword());
+            Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+            logger.debug("Authenticating customer: {} with password: {}", customer.getUser().getUsername(), customer.getPassword());
             CustomUserDetails customUserDetails = new CustomUserDetails(
                     customer.getId(),
                     customer.getUser().getUsername(),
