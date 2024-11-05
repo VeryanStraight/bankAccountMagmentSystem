@@ -225,7 +225,6 @@ class ServiceImplTest {
     @Test
     void deleteCustomerByIdTest() {
         try {
-            List<Account> a = service.getAccountByCustomerId(2);
             service.deleteCustomerById(2);
             service.getCustomerByUsername("tojhonson");
             fail();
