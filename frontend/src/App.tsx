@@ -5,6 +5,9 @@ import SignIn from "./components/SignIn";
 import EmployeeDashBoard from "./components/employee/EmployeeDashBoard";
 import CustomerDashboard from "./components/customer/CustomerDashBoard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 const App = () => {
   return (

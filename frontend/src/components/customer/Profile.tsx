@@ -24,6 +24,7 @@ const Profile = ({ username }: Props) => {
         const res = await axios.get<Customer>(
           `http://localhost:8080/api/accountSystem/user/${username}/customer`
         );
+        console.log(res.data);
         setCustomer(res.data);
         console.log("response " + res.data);
       } catch (err) {

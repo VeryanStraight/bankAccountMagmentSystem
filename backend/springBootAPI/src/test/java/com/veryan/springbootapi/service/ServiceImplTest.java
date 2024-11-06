@@ -95,7 +95,7 @@ class ServiceImplTest {
         Transaction transaction = new Transaction(type, new BigDecimal("10"));
         try {
             Account toAccount = service.getAccountByCustomerId(1).get(0);
-            Account fromAccount = service.getAccountByCustomerId(2).get(0);
+            Account fromAccount = service.getAccountByCustomerId(3).get(0);
             System.out.println(toAccount);
             System.out.println(fromAccount);
             transaction.setToAccount(toAccount);
@@ -109,7 +109,7 @@ class ServiceImplTest {
             assertEquals(createdTransaction, foundTransaction);
 
             Account toAccountAfter = service.getAccountByCustomerId(1).get(0);
-            Account fromAccountAfter = service.getAccountByCustomerId(2).get(0);
+            Account fromAccountAfter = service.getAccountByCustomerId(3).get(0);
 
             BigDecimal ten = new BigDecimal("10");
 
