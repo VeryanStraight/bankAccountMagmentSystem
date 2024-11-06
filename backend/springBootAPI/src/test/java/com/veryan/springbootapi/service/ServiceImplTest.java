@@ -14,15 +14,21 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * tests for the service implementation
+ */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest()
 @Transactional
 class ServiceImplTest {
     //TODO: need to check invalid inputs
-
+    //todo: ensure the mocking is setup correctly (currently seems to be using my actual database)
     @Autowired
-    Service service;
+    private Service service;
 
+    /**
+     * test creating a valid user
+     */
     @Test
     void createUserTest() {
         User user = new User("testusername", "testname");
@@ -32,11 +38,14 @@ class ServiceImplTest {
             User foundUser = service.getUserByUsername("testusername");
             assertEquals(createdUser, foundUser);
         } catch (NoSuchRecordException | AlreadyExistsException e) {
-            fail();
+            fail("couldn't create user"+e);
         }
 
     }
 
+    /**
+     * test creating a valid customer
+     */
     @Test
     void createCustomerTest() {
         User user = new User("testusername", "testname");
@@ -51,10 +60,13 @@ class ServiceImplTest {
 
             assertEquals(createdCustomer, foundCustomer);
         } catch (AlreadyExistsException | NoSuchRecordException | InvalidInputException e) {
-            fail();
+            fail("couldn't create customer"+e);
         }
     }
 
+    /**
+     * test creating a valid employee
+     */
     @Test
     void createEmployeeTest() {
         User user = new User("testusername", "testname");
@@ -67,10 +79,13 @@ class ServiceImplTest {
 
             assertEquals(createdEmployee, foundEmployee);
         } catch (AlreadyExistsException | NoSuchRecordException | InvalidInputException e) {
-            fail();
+            fail("couldn't create employee"+e);
         }
     }
 
+    /**
+     * test creating a valid employee
+     */
     @Test
     void createAccountTest() {
         try {
@@ -82,11 +97,14 @@ class ServiceImplTest {
 
             assertTrue(foundAccounts.contains(createdAccount));
         } catch (NoSuchRecordException | AlreadyExistsException | InvalidInputException e) {
-            fail(e);
+            fail("couldn't create account"+e);
         }
 
     }
 
+    /**
+     * test creating a valid transaction
+     */
     @Test
     void createTransactionTest() {
         //TODO create transactions for all types
@@ -104,7 +122,6 @@ class ServiceImplTest {
             BigDecimal fromAmount = fromAccount.getBalance();
 
             Transaction createdTransaction = service.createTransaction(transaction);
-            List<Transaction> t = service.getTransactionsByAccountId(fromAccount.getId());
             Transaction foundTransaction = service.getTransactionsByAccountId(fromAccount.getId()).get(2);
             assertEquals(createdTransaction, foundTransaction);
 
@@ -117,23 +134,29 @@ class ServiceImplTest {
             assertEquals(toAccountAfter.getBalance().subtract(ten), toAmount);
             assertEquals(fromAccountAfter.getBalance().add(ten), fromAmount);
         } catch (NoSuchRecordException | AlreadyExistsException | InvalidInputException e) {
-            fail();
+            fail("couldn't create transaction"+e);
         }
 
 
     }
 
+    /**
+     * test getting a valid user
+     */
     @Test
     void getUserByUsernameTest() {
         try {
             User user = service.getUserByUsername("sasmith");
             assertNotEquals(null, user);
         } catch (NoSuchRecordException e) {
-            fail();
+            fail("couldn't get user"+e);
         }
         
     }
 
+    /**
+     * test getting a valid customer
+     */
     @Test
     void getCustomerByUsernameTest() {
         try {
@@ -141,30 +164,39 @@ class ServiceImplTest {
             assertNotEquals(null, customer);
 
         } catch (NoSuchRecordException e) {
-            fail();
+            fail("couldn't get customer"+e);
         }
-            }
+    }
 
+    /**
+     * test getting a valid transaction
+     */
     @Test
     void getTransactionByAccountIdTest() {
         try {
             Transaction foundTransaction = service.getTransactionsByAccountId(1).get(0);
             assertNotEquals(null, foundTransaction);
         } catch (NoSuchRecordException e) {
-            fail();
+            fail("couldn't get transaction"+e);
         }
     }
 
+    /**
+     * test getting a valid account
+     */
     @Test
     void getAccountByCustomerIdTest() {
         try {
             Account account = service.getAccountByCustomerId(1).get(0);
             assertNotEquals(null, account);
         } catch (NoSuchRecordException e) {
-            fail();
+            fail("couldn't get account"+e);
         }
     }
 
+    /**
+     * test updating a valid user
+     */
     @Test
     void updateUserTest() {
         try {
@@ -175,10 +207,13 @@ class ServiceImplTest {
             user = service.getUserByUsername("sasmith");
             assertEquals("new email", user.getEmail());
         } catch (NoSuchRecordException e) {
-            fail();
+            fail("couldn't update"+e);
         }
     }
 
+    /**
+     * test updating a valid customer
+     */
     @Test
     void updateCustomerTest() {
         try {
@@ -191,10 +226,13 @@ class ServiceImplTest {
             customer = service.getCustomerByUsername("sasmith");
             assertEquals("new password", customer.getPassword());
         } catch (NoSuchRecordException e) {
-            fail();
+            fail("couldn't update customer"+e);
         }
     }
 
+    /**
+     * test updating a valid account
+     */
     @Test
     void updateAccountTest() {
         try {
@@ -208,31 +246,39 @@ class ServiceImplTest {
             Account foundAccount = service.getAccountByCustomerId(1).get(0);
             assertEquals(foundAccount.getBalance(), new BigDecimal("10"));
         } catch (NoSuchRecordException e) {
-            fail();
+            fail("couldn't update account"+e);
         }
     }
 
+    /**
+     * test deleting a valid user
+     */
     @Test
     void deleteUserByUsernameTest() {
         try {
             service.deleteUserByUsername("sasmith");
             service.getUserByUsername("sasmith");
-            fail();
+            fail("found user after delete");
         } catch (NoSuchRecordException ignored) {
         }
     }
 
+    /**
+     * test deleting a valid customer
+     */
     @Test
     void deleteCustomerByIdTest() {
         try {
-            List<Account> a = service.getAccountByCustomerId(2);
             service.deleteCustomerById(2);
             service.getCustomerByUsername("tojhonson");
-            fail();
+            fail("found customer after delete");
         } catch (NoSuchRecordException ignored) {
         }
     }
 
+    /**
+     * test deleting a valid employee
+     */
     @Test
     void deleteEmployeeByIdTest() {
         try {
@@ -240,11 +286,14 @@ class ServiceImplTest {
             service.deleteEmployeeById(e.getId());
 
             service.getEmployeeByUsername("username");
-            fail();
+            fail("found employee after delete");
         } catch (NoSuchRecordException ignored) {
         }
     }
 
+    /**
+     * test deleting a valid account
+     */
     @Test
     void deleteAccountByIdTest() {
         try {
@@ -255,7 +304,7 @@ class ServiceImplTest {
             Account otherAccount = service.getAccountByCustomerId(1).get(0);
             assertNotEquals(account, otherAccount);
         } catch (NoSuchRecordException e) {
-            fail();
+            fail("couldn't find account");
         }
     }
 }

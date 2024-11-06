@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/**
+ * the status entity
+ */
 @Data
 @Entity(name = "statuses")
 @EqualsAndHashCode

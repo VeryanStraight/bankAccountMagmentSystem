@@ -18,20 +18,35 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * a custom user details service that finds the corresponding password and role from a username.
+ * checks for an employee first then a customer.
+ * it works under the assumption that a user can't be both a customer and employee.
+ * doesn't use password encryption currently.
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     private final EmployeeRepository employeeRepository;
     private final CustomerRepository customerRepository;
 
-
+    /**
+     * the constructor for CustomUserDetailsService
+     * @param employeeRepository the repository for employees that allows access to the database
+     * @param customerRepository the repository for customers that allows access to the database
+     */
     @Autowired
     public CustomUserDetailsService(EmployeeRepository employeeRepository, CustomerRepository customerRepository) {
         this.employeeRepository = employeeRepository;
         this.customerRepository = customerRepository;
     }
 
+    /**
+     * finds the user details from the username
+     * @param username the username
+     * @return the user details
+     * @throws UsernameNotFoundException if no user is found
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // First, try to find the user in the Employee table
@@ -39,18 +54,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (employeeOpt.isPresent()) {
             Employee employee = employeeOpt.get();
 
-            Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_EMPLOYEE"));
-            logger.debug("Authenticating employee: {} with password: {}", employee.getUser().getUsername(), employee.getPassword());
-            CustomUserDetails customUserDetails = new CustomUserDetails(
-                    employee.getId(),
+            return new User(
                     employee.getUser().getUsername(),
-                    "{noop}"+employee.getPassword(),
-                    authorities
+                    "{noop}"+employee.getPassword(), //prefix with {noop} as not encrypting password
+                    Set.of(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))
             );
-            logger.debug(customUserDetails.username());
-            logger.debug(customUserDetails.password());
-
-            return customUserDetails;
         }
 
         // If not found, try the Customer table
@@ -58,19 +66,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (customerOpt.isPresent()) {
             Customer customer = customerOpt.get();
 
-            Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
-            logger.debug("Authenticating customer: {} with password: {}", customer.getUser().getUsername(), customer.getPassword());
-            CustomUserDetails customUserDetails = new CustomUserDetails(
-                    customer.getId(),
+            return new User(
                     customer.getUser().getUsername(),
-                    "{noop}"+customer.getPassword(),
-                    authorities
+                    "{noop}"+customer.getPassword(), //prefix with {noop} as not encrypting password
+                    Set.of(new SimpleGrantedAuthority("ROLE_CUSTOMER"))
             );
-            logger.debug(customUserDetails.username());
-            logger.debug(customUserDetails.password());
-
-            return customUserDetails;
-            //todo user cant be both user and employee
         }
 
         // If no user is found, throw an exception

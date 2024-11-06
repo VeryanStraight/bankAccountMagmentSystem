@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * the account entity
+ */
 @Entity(name = "accounts")
 @Data
 @EqualsAndHashCode
@@ -45,16 +48,31 @@ public class Account {
     )
     private List<Customer> beneficiaries;
 
+    /**
+     * the constructor
+     * @param customer the customer
+     */
     public Account(Customer customer) {
         this.customer = customer;
     }
 
+    /**
+     * the default constructor
+     */
     public Account() {}
 
+    /**
+     * add an amount of money to the account
+     * @param amount the amount to add
+     */
     public void addAmount(BigDecimal amount){
         balance = balance.add(amount);
     }
 
+    /**
+     * subtract an amount of money from the account
+     * @param amount the amount to subtract
+     */
     public void subtractAmount(BigDecimal amount){
         balance = balance.subtract(amount);
     }

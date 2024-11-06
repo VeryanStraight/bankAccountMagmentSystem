@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * the jpa transaction repository
+ */
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
     List<Transaction> getTransactionByFromAccount_Id(int id);

@@ -8,6 +8,9 @@ import lombok.ToString;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * the transaction entity
+ */
 @Entity(name = "transactions")
 @Data
 @EqualsAndHashCode
@@ -38,11 +41,19 @@ public class Transaction {
     @Column
     private LocalDate datetime;
 
+    /**
+     * the constructor
+     * @param type the transaction type
+     * @param amount the amount of money
+     */
     public Transaction(TransactionType type, BigDecimal amount) {
         this.type = type;
         this.amount = amount;
     }
 
+    /**
+     * the default constructor
+     */
     public Transaction() {
 
     }

@@ -5,20 +5,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * the controller
+ */
 @RestController
 @RequestMapping("/api/accountSystem")
 @EnableMethodSecurity()
 @CrossOrigin(origins = "http://localhost:5174")
 public class MainController {
-    Service service;
+    private final Service service;
 
+    /**
+     * the constructor
+     * @param service the service layer
+     */
     @Autowired
     public MainController(Service service) {
         this.service = service;
@@ -131,6 +136,11 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point for getting a user by username
+     * @param username the username
+     * @return the user if it exists
+     */
     @PreAuthorize("#username == authentication.principal.username or hasRole('EMPLOYEE')")
     @GetMapping("/user/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username){
@@ -141,6 +151,11 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point for getting a customer by username
+     * @param username the username
+     * @return the customer if it exists
+     */
     @GetMapping("/user/{username}/customer")
     public ResponseEntity<Customer> getCustomerByUsername(@PathVariable String username){
         try{
@@ -150,6 +165,11 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point for getting an employee by username
+     * @param username the username
+     * @return the employee if it exists
+     */
     @GetMapping("/user/{username}/employee")
     public ResponseEntity<Employee> getEmployeeByUsername(@PathVariable String username){
         try{
@@ -159,6 +179,11 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point for getting the transactions of an account
+     * @param id the account id
+     * @return the transactions
+     */
     @GetMapping("/account/{id}/transaction")
     public ResponseEntity<List<Transaction>> getTransactionsByAccountId(@PathVariable int id) {
         try {
@@ -168,6 +193,11 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point for getting the accounts of a customer
+     * @param id the customer id
+     * @return the accounts
+     */
     @GetMapping("/customer/{id}/account")
     public ResponseEntity<List<Account>> getAccountByCustomerId(@PathVariable int id){
         try {
@@ -177,6 +207,11 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point for getting an account
+     * @param id the account id
+     * @return the account
+     */
     @GetMapping("/account/{id}")
     public ResponseEntity<Account> getAccountById(@PathVariable int id){
         try {
@@ -186,11 +221,21 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point for getting the transaction types
+     * @return the transaction types
+     */
     @GetMapping("/transactiontypes")
     public ResponseEntity<List<TransactionType>> getTransactionTypes(){
         return ResponseEntity.status(HttpStatus.OK).body(service.getTransactionTypes());
     }
 
+    /**
+     * an end point to update a user
+     * @param username the user to update
+     * @param user the data to replace
+     * @return the updated user
+     */
     @PatchMapping("/user/{username}")
     public ResponseEntity<User> updateUser(@PathVariable String username, @RequestBody User user){
         try {
@@ -206,6 +251,12 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point to update a customer
+     * @param id the customer to update
+     * @param customer the data to replace
+     * @return the updated customer
+     */
     @PatchMapping("/customer/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable int id, @RequestBody Customer customer){
         try {
@@ -221,6 +272,12 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point to update an account
+     * @param id the account to update
+     * @param account the data to replace
+     * @return the updated account
+     */
     @PatchMapping("/account/{id}")
     public ResponseEntity<Account> updateAccount(@PathVariable int id, @RequestBody Account account){
         try {
@@ -237,6 +294,12 @@ public class MainController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
+
+    /**
+     * an end point to delete a user. it will also delete the associated customer or employee
+     * @param username the user
+     * @return the response code
+     */
     @PreAuthorize("hasRole('EMPLOYEE')")
     @DeleteMapping("/user/{username}")
     public ResponseEntity<Void> deleteUserByUsername(@PathVariable String username){
@@ -248,6 +311,11 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point to delete a customer.
+     * @param id the customer
+     * @return the response code
+     */
     @PreAuthorize("hasRole('EMPLOYEE')")
     @DeleteMapping("/customer/{id}")
     public ResponseEntity<Void> deleteCustomerById(@PathVariable int id){
@@ -259,6 +327,11 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point to delete an employee.
+     * @param id the employee
+     * @return the response code
+     */
     @PreAuthorize("hasRole('EMPLOYEE')")
     @DeleteMapping("/employee/{id}")
     public ResponseEntity<Void> deleteEmployeeById(@PathVariable int id){
@@ -270,6 +343,11 @@ public class MainController {
         }
     }
 
+    /**
+     * an end point to delete an account.
+     * @param id the account
+     * @return the response code
+     */
     @PreAuthorize("hasRole('EMPLOYEE')")
     @DeleteMapping("/account/{id}")
     public ResponseEntity<Void> deleteAccountById(@PathVariable int id){

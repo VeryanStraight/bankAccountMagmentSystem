@@ -1,13 +1,16 @@
 package com.veryan.springbootapi.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.List;
-
+/**
+ * the user entity
+ */
 @Entity(name = "users")
 @Data
 @EqualsAndHashCode
@@ -26,11 +29,19 @@ public class User {
     @Column
     private String phone;
 
+    /**
+     * the user constructor
+     * @param username the username
+     * @param name the name
+     */
     public User(String username, String name) {
         this.username = username;
         this.name = name;
     }
 
+    /**
+     * the no args constructor
+     */
     public User() {
 
     }

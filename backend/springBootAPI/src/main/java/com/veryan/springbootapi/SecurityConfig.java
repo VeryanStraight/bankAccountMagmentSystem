@@ -1,6 +1,5 @@
 package com.veryan.springbootapi;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,30 +10,47 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+/**
+ * configures spring security for the API
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final CustomUserDetailsService customUserDetailsService;
 
+    /**
+     * a custom service for loading customer or employee sign in details and assigning a role
+     */
+    private final CustomUserDetailsService userDetailsService;
+
+    /**
+     * constructor for SecurityConfig
+     * @param userDetailsService the service for loading users
+     */
     @Autowired
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
-        this.customUserDetailsService = customUserDetailsService;
+    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
+
+    /**
+     * configures Cross-Origin Resource Sharing to communicate with the front end
+     * disables csrf protection for simplicity, which leaves it open to csrf attacks
+     * configures what API urls different roles can access (hasRole prepends ROLE_)
+     * @param http
+     * @return
+     * @throws Exception
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login").permitAll()
                         .requestMatchers("/user").hasRole("EMPLOYEE")
                         .requestMatchers("/customer").hasRole("EMPLOYEE")
                         .requestMatchers("/employee").hasRole("EMPLOYEE")
@@ -58,34 +74,44 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                .loginProcessingUrl("/login") // Login processing URL
-                .successHandler((request, response, authentication) -> {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"status\": \"success\", \"message\": \"Login successful\"}");
-                })
-                .failureHandler((request, response, exception) -> {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"status\": \"error\", \"message\": \"Login failed\"}");
-                })
-//                .loginPage("/login") // Explicitly set to disable default login page
-                .permitAll()
-        )
-                .logout(LogoutConfigurer::permitAll
-                );
+                    .loginProcessingUrl("/login")
+                    .successHandler((request, response, authentication) -> {
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"status\": \"success\", \"message\": \"Login successful\"}");
+                    })
+                    .failureHandler((request, response, exception) -> {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"status\": \"error\", \"message\": \"Login failed\"}");
+                    })
+                    .permitAll()
+                )
+                .logout(LogoutConfigurer::permitAll);
 
         return http.build();
     }
 
+    /**
+     * configure spring security to use the custom userDetailsService
+     * @param http the HttpSecurity object that manages the configuration
+     * @return the created AuthenticationManager
+     * @throws Exception thrown by userDetailsService and build methods
+     */
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(customUserDetailsService);
+
+        authenticationManagerBuilder.userDetailsService(userDetailsService);
+
         return authenticationManagerBuilder.build();
     }
 
+    /**
+     * sets up the configuration for the cross-origin resource Sharing
+     * @return the completed configuration
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -95,7 +121,7 @@ public class SecurityConfig {
         configuration.addAllowedMethod("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply the config to all endpoints
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }

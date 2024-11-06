@@ -26,7 +26,8 @@ const SignIn = () => {
       );
 
       // Handle successful login (e.g., redirect to dashboard)
-      console.log("Login successful" + response.data);
+      console.log("Login successful");
+      console.log(response.data);
       // Redirect or update state as needed
       localStorage.setItem("userRole", role);
       localStorage.setItem("username", username);

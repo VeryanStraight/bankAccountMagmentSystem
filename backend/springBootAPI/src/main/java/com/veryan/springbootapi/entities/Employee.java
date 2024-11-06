@@ -5,8 +5,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Objects;
-
+/**
+ * the employee entity
+ */
 @Entity(name = "employees")
 @Data
 @EqualsAndHashCode
@@ -23,11 +24,19 @@ public class Employee {
     @Column
     private String password;
 
+    /**
+     * the constructor
+     * @param user the user
+     * @param password the password
+     */
     public Employee(User user, String password) {
         this.user = user;
         this.password = password;
     }
 
+    /**
+     *  the default constructor
+     */
     public Employee() {
 
     }
