@@ -7,8 +7,6 @@ import { TransactionType } from "../TransactionType";
 import { Transaction } from "../Transactions";
 import { Customer } from "../Customer";
 import { Alert, Col, Row } from "react-bootstrap";
-import CustomerNav from "./CustomerNav";
-import { Status } from "../Status";
 
 interface Props {
   username: string;
@@ -31,38 +29,43 @@ const CreateTransaction = ({ username }: Props) => {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
 
+  //on page open get the accounts and transaction types
   useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const customer: Customer = (
-          await axios.get<Customer>(
-            `http://localhost:8080/api/accountSystem/user/${username}/customer`
-          )
-        ).data;
-        const response = await axios.get(
-          `http://localhost:8080/api/accountSystem/customer/${customer.id}/account`
-        );
-        setAccounts(response.data);
-      } catch (error) {
-        console.error("Error fetching accounts:", error);
-      }
-    };
-
-    const fetchTransactionTypes = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/accountSystem/transactiontypes`
-        );
-        setTransactionTypes(response.data);
-      } catch (error) {
-        console.error("Error fetching transaction types:", error);
-      }
-    };
-
     fetchAccounts();
     fetchTransactionTypes();
   }, []);
 
+  //fetch accounts method
+  const fetchAccounts = async () => {
+    try {
+      const customer: Customer = (
+        await axios.get<Customer>(
+          `http://localhost:8080/api/accountSystem/user/${username}/customer`
+        )
+      ).data;
+
+      const response = await axios.get(
+        `http://localhost:8080/api/accountSystem/customer/${customer.id}/account`
+      );
+      setAccounts(response.data);
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+    }
+  };
+
+  //fetch transactions method
+  const fetchTransactionTypes = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/accountSystem/transactiontypes`
+      );
+      setTransactionTypes(response.data);
+    } catch (error) {
+      console.error("Error fetching transaction types:", error);
+    }
+  };
+
+  //whn the form changes update the data
   const handleChange = (e: React.ChangeEvent<HTMLElement>) => {
     const target = e.target as HTMLSelectElement | HTMLInputElement;
     const { name, value } = target;
@@ -72,6 +75,7 @@ const CreateTransaction = ({ username }: Props) => {
     }));
   };
 
+  //when the account changes set the new account
   const handleChangeAccount = (e: React.ChangeEvent<HTMLElement>) => {
     const target = e.target as HTMLSelectElement | HTMLInputElement;
     const { name, value } = target;
@@ -89,6 +93,7 @@ const CreateTransaction = ({ username }: Props) => {
     }));
   };
 
+  //when the transaction type changes set the new type
   const handleChangeType = (e: React.ChangeEvent<HTMLElement>) => {
     const target = e.target as HTMLSelectElement | HTMLInputElement;
     const { name, value } = target;
@@ -102,6 +107,7 @@ const CreateTransaction = ({ username }: Props) => {
     }));
   };
 
+  //make the new transaction
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -110,7 +116,7 @@ const CreateTransaction = ({ username }: Props) => {
         `http://localhost:8080/api/accountSystem/transaction`,
         transactionData
       );
-      setMessage("Transaction created successfully!" + response.data);
+      setMessage("Transaction created successfully! id: " + response.data.id);
       setSuccess(true);
     } catch (error) {
       console.error("Error creating transaction:", error);
@@ -119,6 +125,7 @@ const CreateTransaction = ({ username }: Props) => {
     }
   };
 
+  //the html for the make transaction page
   return (
     <>
       <h2 className="mt-4">Create New Transaction</h2>

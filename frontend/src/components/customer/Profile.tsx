@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { Customer } from "../Customer"; // Adjust the import path as needed
-import CustomerNav from "./CustomerNav";
+import { Customer } from "../Customer";
 
 interface Props {
   username: string;
 }
 
+//show the customers details
 const Profile = ({ username }: Props) => {
   const [customer, setCustomer] = useState<Customer | null>(null);
 
   console.log("profile " + username);
+  //get the user each time the username is updated
   useEffect(() => {
     console.log("in use effect" + username);
     console.log(username);
     fetchCustomer();
   }, [username]);
 
+  //get the customer
   const fetchCustomer = async () => {
     console.log("fetch customer");
     if (username) {
@@ -33,6 +35,7 @@ const Profile = ({ username }: Props) => {
     }
   };
 
+  //the html for the profile page
   return (
     <div>
       <h2>Profile</h2>

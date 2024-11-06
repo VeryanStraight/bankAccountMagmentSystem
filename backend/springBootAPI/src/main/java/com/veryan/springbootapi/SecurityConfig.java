@@ -116,7 +116,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.addAllowedOrigin("http://localhost:5174"); // Allow requests from React app
+        configuration.addAllowedOrigin("http://localhost:5173"); // Allow requests from React app
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
 

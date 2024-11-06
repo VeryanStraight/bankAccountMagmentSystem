@@ -6,6 +6,7 @@ import { User } from "../User";
 import { Customer } from "../Customer";
 import axios from "axios";
 
+//adds a customer
 const AddCustomer = () => {
   const [user, setUser] = useState<User>({
     username: undefined,
@@ -25,41 +26,46 @@ const AddCustomer = () => {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
 
+  //update the customer useState when the form is changed
   const handleChangeCustomer = (e: React.ChangeEvent<HTMLElement>) => {
     const target = e.target as HTMLSelectElement | HTMLInputElement;
     const { name, value } = target;
     console.log(name + " " + value);
+
     setCustomer((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
 
+  //update the user useState when the form is changed
   const handleChangeUser = (e: React.ChangeEvent<HTMLElement>) => {
     const target = e.target as HTMLSelectElement | HTMLInputElement;
     const { name, value } = target;
     console.log(name + " " + value);
+
     setUser((prevData) => ({
       ...prevData,
       [name]: value,
     }));
 
+    //put the updated user in the customer
     setCustomer((pervData) => ({
       ...pervData,
       ["user"]: user,
     }));
   };
 
+  //add the customer
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       console.log(user);
-      const createdUser = await axios.put(
-        `http://localhost:8080/api/accountSystem/user`,
-        user
-      );
+      //add the user
+      await axios.put(`http://localhost:8080/api/accountSystem/user`, user);
 
       console.log(customer);
+      //add the customer
       const createdCustomer = await axios.put<Customer>(
         `http://localhost:8080/api/accountSystem/customer`,
         customer
@@ -75,6 +81,7 @@ const AddCustomer = () => {
     }
   };
 
+  //the html for the add customer page
   return (
     <>
       <h2 className="mt-4">Create New Customer</h2>

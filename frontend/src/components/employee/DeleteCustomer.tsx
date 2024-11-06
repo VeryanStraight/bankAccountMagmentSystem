@@ -5,17 +5,20 @@ import { Customer } from "../Customer";
 import { Alert } from "react-bootstrap";
 import axios from "axios";
 
+//deletes a customer
 const DeleteCustomer = () => {
   const [customerUsername, setCustomerUsername] = useState<string>();
   const [customer, setCustomer] = useState<Customer>();
   const [message, setMessage] = useState("");
 
+  //updates the customer when the username changes
   useEffect(() => {
     if (customerUsername != undefined) {
       fetchCustomer(customerUsername);
     }
   }, [customerUsername]);
 
+  //gets the customer
   const fetchCustomer = async (username: string) => {
     console.log("fetch customer");
     if (username) {
@@ -32,16 +35,19 @@ const DeleteCustomer = () => {
     }
   };
 
+  //deletes the customer
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       console.log(customerUsername);
       console.log(customer);
+      //show message if the username is invalid
       if (customerUsername == undefined || customer == undefined) {
         setMessage("No customer");
         return;
       }
 
+      //deletes the customer
       const response = await axios.delete(
         `http://localhost:8080/api/accountSystem/customer/${customer.id}`
       );
@@ -52,6 +58,7 @@ const DeleteCustomer = () => {
     }
   };
 
+  //the thml for the delete customer page
   return (
     <>
       <h2 className="mt-4">Delete Customer</h2>

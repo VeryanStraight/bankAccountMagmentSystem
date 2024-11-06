@@ -1,8 +1,8 @@
-import React from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import Profile from "./Profile";
 import MakeTransaction from "./MakeTransaction";
 
+//sets up the customer routes and return the nav
 const CustomerNav = () => {
   const username: string = localStorage.getItem("username") ?? "";
 

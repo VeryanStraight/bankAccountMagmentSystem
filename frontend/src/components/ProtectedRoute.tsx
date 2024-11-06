@@ -7,6 +7,7 @@ type Props = {
   role: string;
 };
 
+//redirects to sign in if user doesn't have the right role for the route
 const ProtectedRoute = ({ children, role }: Props) => {
   const userRole = localStorage.getItem("userRole");
 

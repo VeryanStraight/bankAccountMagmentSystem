@@ -1,8 +1,8 @@
-import React from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import DeleteCustomer from "./DeleteCustomer";
 import AddCustomer from "./AddCustomer";
 
+//sets up the routes for customers and return the nav
 const CustomerNav = () => {
   return (
     <>
