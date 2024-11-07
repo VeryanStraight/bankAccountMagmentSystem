@@ -272,9 +272,16 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
         return account.get();
     }
 
+    @Override
     public List<TransactionType> getTransactionTypes(){
         return transactionTypes.findAll();
     }
+
+    @Override
+    public List<Status> getStatuses(){
+        return statuses.findAll();
+    }
+
     @Override
     public User updateUser(User user) throws NoSuchRecordException {
         String username = user.getUsername();

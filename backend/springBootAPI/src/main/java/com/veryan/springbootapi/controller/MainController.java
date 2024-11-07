@@ -97,9 +97,11 @@ public class MainController {
     @PutMapping("/account")
     public ResponseEntity<Account> createAccount(@RequestBody Account account){
         try {
+            System.out.println(account);
             Account createdAccount = service.createAccount(account);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
         } catch (AlreadyExistsException | InvalidInputException e) {
+            System.out.println(e);
             //if a duplicate key or non-existent foreign key
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -231,6 +233,15 @@ public class MainController {
     }
 
     /**
+     * an end point for getting the transaction types
+     * @return the transaction types
+     */
+    @GetMapping("/statuses")
+    public ResponseEntity<List<Status>> getStatuses(){
+        return ResponseEntity.status(HttpStatus.OK).body(service.getStatuses());
+    }
+
+    /**
      * an end point to update a user
      * @param username the user to update
      * @param user the data to replace
@@ -260,17 +271,13 @@ public class MainController {
     @PatchMapping("/customer/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable int id, @RequestBody Customer customer){
         try {
-            System.out.println("test");
-            System.out.println(customer);
             Customer oldCustomer = service.getCustomerByUsername(customer.getUser().getUsername());
 
             if(id != oldCustomer.getId()){return ResponseEntity.status(HttpStatus.CONFLICT).build();}
             if(customer.getAddress() != null){oldCustomer.setAddress(customer.getAddress());}
             if(customer.getPassword() != null){oldCustomer.setPassword(customer.getPassword());}
-            System.out.println(oldCustomer);
             return ResponseEntity.status(HttpStatus.OK).body(service.updateCustomer(oldCustomer));
         } catch (NoSuchRecordException e) {
-            System.out.println(e);
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }

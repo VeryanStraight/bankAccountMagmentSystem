@@ -105,6 +105,13 @@ public interface Service {
      */
     List<TransactionType> getTransactionTypes();
 
+
+    /**
+     * gets the statuses
+     * @return the statuses
+     */
+    List<Status> getStatuses();
+
     /**
      * updates a user
      * @param user the new information to add to the user
