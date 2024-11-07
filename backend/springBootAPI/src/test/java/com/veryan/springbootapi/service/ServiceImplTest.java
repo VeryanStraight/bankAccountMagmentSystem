@@ -109,7 +109,7 @@ class ServiceImplTest {
     void createTransactionTest() {
         //TODO create transactions for all types
         List<TransactionType> transactionTypes = service.getTransactionTypes();
-        TransactionType type = transactionTypes.get(2);
+        TransactionType type = transactionTypes.get(1);
         Transaction transaction = new Transaction(type, new BigDecimal("10"));
         try {
             Account toAccount = service.getAccountByCustomerId(1).get(0);
