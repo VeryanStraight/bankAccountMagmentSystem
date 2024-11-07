@@ -41,9 +41,9 @@ public class SecurityConfig {
      * configures Cross-Origin Resource Sharing to communicate with the front end
      * disables csrf protection for simplicity, which leaves it open to csrf attacks
      * configures what API urls different roles can access (hasRole prepends ROLE_)
-     * @param http
-     * @return
-     * @throws Exception
+     * @param http the http configuration
+     * @return the created SecurityFilterChain
+     * @throws Exception thrown by csrf method
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

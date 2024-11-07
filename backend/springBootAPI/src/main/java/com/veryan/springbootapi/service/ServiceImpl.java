@@ -164,17 +164,7 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
                 doWithdrawal(fromAccount, amount);
                 break;
             case "Transfer":
-                if (toAccount == null || fromAccount==null){
-                    throw new InvalidInputException("must have to and from account for a transfer");
-                }
-                toAccount.addAmount(amount);
-                fromAccount.subtractAmount(amount);
-                try {
-                    accounts.save(toAccount);
-                    accounts.save(fromAccount);
-                }catch (DataIntegrityViolationException e){
-                    throw new NoSuchRecordException("invalid toAccount or fromAccount", e);
-                }
+                Transfer(fromAccount, toAccount, amount);
                 break;
             default:
                 throw new InvalidInputException("unknown transaction type");

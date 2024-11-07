@@ -129,7 +129,6 @@ public interface Service {
      */
     Account updateAccount(Account account) throws NoSuchRecordException;
 
-    //todo need to check if breaks constraint e.g customer has account
     /**
      * deletes a user and the corresponding customer or employee.
      * @param username the user's username
@@ -151,7 +150,6 @@ public interface Service {
      */
     void deleteEmployeeById(int id) throws NoSuchRecordException;
 
-    //todo what if there is a transaction
     /**
      * deletes an account
      * @param id the account id

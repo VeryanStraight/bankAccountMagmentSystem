@@ -260,14 +260,17 @@ public class MainController {
     @PatchMapping("/customer/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable int id, @RequestBody Customer customer){
         try {
-            //todo let you change the user?
+            System.out.println("test");
+            System.out.println(customer);
             Customer oldCustomer = service.getCustomerByUsername(customer.getUser().getUsername());
 
+            if(id != oldCustomer.getId()){return ResponseEntity.status(HttpStatus.CONFLICT).build();}
             if(customer.getAddress() != null){oldCustomer.setAddress(customer.getAddress());}
             if(customer.getPassword() != null){oldCustomer.setPassword(customer.getPassword());}
-
+            System.out.println(oldCustomer);
             return ResponseEntity.status(HttpStatus.OK).body(service.updateCustomer(oldCustomer));
         } catch (NoSuchRecordException e) {
+            System.out.println(e);
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }

@@ -5,7 +5,6 @@ import com.veryan.springbootapi.entities.Employee;
 import com.veryan.springbootapi.reposities.CustomerRepository;
 import com.veryan.springbootapi.reposities.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * a custom user details service that finds the corresponding password and role from a username.
