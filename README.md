@@ -9,7 +9,7 @@ it alows customers to login. cuesomter can:
   - create transactions
 
 # Future Goals
-more features are going to be added to the front end.  
+front end has full functonality, but needs work on it's apperence.  
 the back end has full functonality, but needs more work done to ensure invalid input is properly delt with.
 
 # Implementation Details
