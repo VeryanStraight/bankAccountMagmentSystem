@@ -66,7 +66,9 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
         Optional<Customer> c = customers.findById(customer.getId());
         if(c.isPresent()){throw new AlreadyExistsException(customer.toString());}
 
-        if(customer.getCreatedDate() == null){
+        if(customer.getUser().getUsername().contains(" ")){throw new InvalidInputException("username can't have spaces");}
+
+            if(customer.getCreatedDate() == null){
             customer.setCreatedDate(LocalDateTime.now());
         }
 
@@ -113,13 +115,12 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
 
         BigDecimal amount = transaction.getAmount();
 
-        //todo: check the accounts statuses are not frozen
         //get the correct type name from transaction type id
         Optional<TransactionType> transactionType = transactionTypes.findById(transaction.getType().getId());
         if(transactionType.isEmpty()){throw new InvalidInputException("invalid transaction type");}
         String type = transactionType.get().getType();
 
-        //get the correct accounts from account id
+        //get the correct accounts from an account id
         Account toAccount = transaction.getToAccount();
         Account fromAccount = transaction.getFromAccount();
         if(toAccount != null){
@@ -179,8 +180,8 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
      * @throws NoSuchRecordException if the account doesn't exist
      */
     private void Deposit(Account fromAccount, BigDecimal amount) throws InvalidInputException, NoSuchRecordException {
-        if (fromAccount == null){
-            throw new InvalidInputException("must have from account for a deposit");
+        if (fromAccount == null || fromAccount.getStatus().getStatus().equals("Inactive")){
+            throw new InvalidInputException("must have active from account for a deposit");
         }
         fromAccount.addAmount(amount);
         try {
@@ -199,8 +200,9 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
      * @throws NoSuchRecordException if an account doesn't exist
      */
     private void Transfer(Account fromAccount, Account toAccount, BigDecimal amount) throws InvalidInputException, NoSuchRecordException {
-        if (toAccount == null || fromAccount==null){
-            throw new InvalidInputException("must have to and from account for a transfer");
+        if (toAccount == null || fromAccount==null || fromAccount.getStatus().getStatus().equals("Inactive")
+                || toAccount.getStatus().getStatus().equals("Inactive")){
+            throw new InvalidInputException("must have active to and from account for a transfer");
         }
         toAccount.addAmount(amount);
         fromAccount.subtractAmount(amount);
@@ -220,8 +222,8 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
      * @throws NoSuchRecordException if the account doesn't exist
      */
     private void doWithdrawal(Account fromAccount, BigDecimal amount) throws InvalidInputException, NoSuchRecordException {
-        if (fromAccount == null){
-            throw new InvalidInputException("must have from account for a withdrawal");
+        if (fromAccount == null || fromAccount.getStatus().getStatus().equals("Inactive")){
+            throw new InvalidInputException("must have active from account for a withdrawal");
         }
         fromAccount.subtractAmount(amount);
         try {

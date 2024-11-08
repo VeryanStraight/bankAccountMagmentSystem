@@ -4,48 +4,69 @@ import AddCustomer from "./AddCustomer";
 import AddAccount from "./AddAccount";
 import DeleteAccount from "./DeleteAccount";
 import ShowAccount from "./ShowAccount";
+import { Navbar, Container, Nav, Col, Row } from "react-bootstrap";
 
 //sets up the routes for customers and return the nav
 const CustomerNav = () => {
   return (
     <>
-      <nav>
-        <ul>
-          <li>
-            <Link to="deletecustomer">Delete Customer</Link>
-          </li>
-          <li>
-            <Link to="addcustomer">Add Customer</Link>
-          </li>
-          <li>
-            <Link to="addaccount">Add Account</Link>
-          </li>
-          <li>
-            <Link to="deleteaccount">Delete Account</Link>
-          </li>
-          <li>
-            <Link to="showaccounts">Show Account</Link>
-          </li>
-        </ul>
-      </nav>
+      <Navbar expand="lg" className="bg-body-tertiary">
+        <Container>
+          <Navbar.Brand as={Link} to="/employee-dashboard">
+            <img
+              src="\resources\robin.jpg"
+              alt="Bank Logo"
+              width="50"
+              height="40"
+              className="d-inline-block align-top"
+            />
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link as={Link} to="deletecustomer">
+                Delete Customer
+              </Nav.Link>
+              <Nav.Link as={Link} to="addcustomer">
+                Add Customer
+              </Nav.Link>
+              <Nav.Link as={Link} to="addaccount">
+                Add Account
+              </Nav.Link>
+              <Nav.Link as={Link} to="deleteaccount">
+                Delete Account
+              </Nav.Link>
+              <Nav.Link as={Link} to="showaccounts">
+                Show Account
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
 
-      <div className="dashboard-content">
-        <Routes>
-          <Route path="deletecustomer" element={<DeleteCustomer />} />
-        </Routes>
-        <Routes>
-          <Route path="addcustomer" element={<AddCustomer />} />
-        </Routes>
-        <Routes>
-          <Route path="addAccount" element={<AddAccount />} />
-        </Routes>
-        <Routes>
-          <Route path="deleteAccount" element={<DeleteAccount />} />
-        </Routes>
-        <Routes>
-          <Route path="showaccounts/*" element={<ShowAccount />} />
-        </Routes>
-      </div>
+      <Container fluid className="min-vh-100">
+        <Row className="w-100">
+          <Col xs={12} md={4} className="mx-auto pt-3">
+            <div className="dashboard-content">
+              <Routes>
+                <Route path="deletecustomer" element={<DeleteCustomer />} />
+              </Routes>
+              <Routes>
+                <Route path="addcustomer" element={<AddCustomer />} />
+              </Routes>
+              <Routes>
+                <Route path="addAccount" element={<AddAccount />} />
+              </Routes>
+              <Routes>
+                <Route path="deleteAccount" element={<DeleteAccount />} />
+              </Routes>
+              <Routes>
+                <Route path="showaccounts/*" element={<ShowAccount />} />
+              </Routes>
+            </div>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 };

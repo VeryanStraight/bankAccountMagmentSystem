@@ -34,6 +34,7 @@ const Transactions = () => {
         <Table striped bordered hover responsive>
           <thead>
             <tr>
+              <th>Transaction Id</th>
               <th>Transaction Type</th>
               <th>Amount</th>
               <th>To Account</th>
@@ -42,6 +43,7 @@ const Transactions = () => {
           <tbody>
             {transactions.map((transaction) => (
               <tr key={transaction.id}>
+                <td>{transaction.id}</td>
                 <td>{transaction.type?.type}</td>
                 <td>{transaction.amount}</td>
                 <td>{transaction.toAccount?.id}</td>

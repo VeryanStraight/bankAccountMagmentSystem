@@ -1,7 +1,7 @@
 //page for signin in to the backend
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
-import { Alert } from "react-bootstrap";
+import { Alert, Col, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
@@ -51,25 +51,38 @@ const SignIn = () => {
 
   //the login html
   return (
-    <div>
-      <h2>Sign In</h2>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
-      <button onClick={() => handleLogin("EMPLOYEE")}>Login as Employee</button>
-      <button onClick={() => handleLogin("CUSTOMER")}>Login as Customer</button>
+    <Container
+      fluid
+      className="min-vh-100 d-flex justify-content-center align-items-center"
+    >
+      <Row className="w-100">
+        <Col xs={12} md={4} className="mx-auto">
+          <div>
+            <h2>Sign In</h2>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+            />
+            <button onClick={() => handleLogin("EMPLOYEE")}>
+              Login as Employee
+            </button>
+            <button onClick={() => handleLogin("CUSTOMER")}>
+              Login as Customer
+            </button>
 
-      {message && <Alert className="mt-3">{message}</Alert>}
-    </div>
+            {message && <Alert className="mt-3">{message}</Alert>}
+          </div>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
