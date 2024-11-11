@@ -33,9 +33,9 @@ const SignIn = () => {
       localStorage.setItem("userRole", role);
       localStorage.setItem("username", username);
       if (role === "EMPLOYEE") {
-        navigate("/employee-dashboard");
+        navigate("/employee-dashboard/showaccounts");
       } else if (role === "CUSTOMER") {
-        navigate("/customer-dashboard");
+        navigate("/customer-dashboard/profile");
       }
     } catch (error) {
       console.error("Error during login:", error);

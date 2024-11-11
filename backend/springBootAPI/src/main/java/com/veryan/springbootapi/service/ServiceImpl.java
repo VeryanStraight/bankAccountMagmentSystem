@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,11 +54,16 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
     }
 
     @Override
-    public User createUser(User user) throws AlreadyExistsException{
+    public User createUser(User user) throws AlreadyExistsException, InvalidInputException {
         Optional<User> u = users.findById(user.getUsername());
         if(u.isPresent()){throw new AlreadyExistsException(user.toString());}
+        if(user.getUsername().contains(" ")){throw new InvalidInputException("username can't have spaces");}
 
-        return users.save(user);
+        try {
+            return users.save(user);
+        }catch (DataIntegrityViolationException e){
+            throw new InvalidInputException("cant have duplicate phone or email", e);
+        }
 
     }
 
@@ -68,7 +74,10 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
 
         if(customer.getUser().getUsername().contains(" ")){throw new InvalidInputException("username can't have spaces");}
 
-            if(customer.getCreatedDate() == null){
+
+
+
+        if(customer.getCreatedDate() == null){
             customer.setCreatedDate(LocalDateTime.now());
         }
 

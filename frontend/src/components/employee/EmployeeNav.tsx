@@ -10,13 +10,13 @@ import { Navbar, Container, Nav, Col, Row } from "react-bootstrap";
 const CustomerNav = () => {
   return (
     <>
-      <Navbar expand="lg" className="bg-body-tertiary">
+      <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
         <Container>
           <Navbar.Brand as={Link} to="/employee-dashboard">
             <img
-              src="\resources\robin.jpg"
+              src="\resources\robin.png"
               alt="Bank Logo"
-              width="50"
+              width="60"
               height="40"
               className="d-inline-block align-top"
             />
@@ -44,7 +44,14 @@ const CustomerNav = () => {
         </Container>
       </Navbar>
 
-      <Container fluid className="min-vh-100">
+      <Container
+        fluid
+        className="min-vh-100"
+        style={{
+          background:
+            "linear-gradient(to right, rgb(157 57 57) 20%, white 20%, white 80%, rgb(157 57 57) 80%)",
+        }}
+      >
         <Row className="w-100">
           <Col xs={12} md={4} className="mx-auto pt-3">
             <div className="dashboard-content">

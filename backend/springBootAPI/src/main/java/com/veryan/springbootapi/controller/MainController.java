@@ -43,7 +43,7 @@ public class MainController {
             System.out.println("in create user");
             User createdUser = service.createUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-        } catch (AlreadyExistsException e) {
+        } catch (AlreadyExistsException | InvalidInputException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -101,7 +101,6 @@ public class MainController {
             Account createdAccount = service.createAccount(account);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
         } catch (AlreadyExistsException | InvalidInputException e) {
-            System.out.println(e);
             //if a duplicate key or non-existent foreign key
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }

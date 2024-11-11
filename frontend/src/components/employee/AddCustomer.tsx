@@ -39,21 +39,16 @@ const AddCustomer = () => {
   };
 
   //update the user useState when the form is changed
-  const handleChangeUser = (e: React.ChangeEvent<HTMLElement>) => {
+  const handleChangeUser = async (e: React.ChangeEvent<HTMLElement>) => {
     const target = e.target as HTMLSelectElement | HTMLInputElement;
     const { name, value } = target;
     console.log(name + " " + value);
 
-    setUser((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    //put the updated user in the customer
-    setCustomer((pervData) => ({
-      ...pervData,
-      ["user"]: user,
-    }));
+    setUser((prevData) => {
+      const updatedUser = { ...prevData, [name]: value };
+      setCustomer((prevData) => ({ ...prevData, user: updatedUser }));
+      return updatedUser;
+    });
   };
 
   //add the customer
@@ -61,6 +56,7 @@ const AddCustomer = () => {
     e.preventDefault();
     try {
       console.log(user);
+      console.log(customer);
       //add the user
       await axios.put(`http://localhost:8080/api/accountSystem/user`, user);
 

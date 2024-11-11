@@ -37,7 +37,7 @@ class ServiceImplTest {
             assertNotEquals(createdUser, null);
             User foundUser = service.getUserByUsername("testusername");
             assertEquals(createdUser, foundUser);
-        } catch (NoSuchRecordException | AlreadyExistsException e) {
+        } catch (NoSuchRecordException | AlreadyExistsException | InvalidInputException e) {
             fail("couldn't create user"+e);
         }
 

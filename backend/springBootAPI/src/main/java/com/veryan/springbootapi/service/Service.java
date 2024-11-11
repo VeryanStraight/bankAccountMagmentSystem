@@ -15,7 +15,7 @@ public interface Service {
      * @return the created user, or null if it fails
      * @throws AlreadyExistsException if a user with that username already exists
      */
-    User createUser(User user) throws AlreadyExistsException;
+    User createUser(User user) throws AlreadyExistsException, InvalidInputException;
 
     /**
      * creates a customer. there must be an existing user for the customer

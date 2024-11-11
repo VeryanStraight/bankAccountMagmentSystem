@@ -1,8 +1,8 @@
 CREATE TABLE users (
                        username VARCHAR(20) PRIMARY KEY,
                        name VARCHAR(40) NOT NULL,
-                       email VARCHAR(50),
-                       phone VARCHAR(20)
+                       email VARCHAR(50) UNIQUE,
+                       phone VARCHAR(20) UNIQUE
 );
 
 CREATE TABLE employees (
