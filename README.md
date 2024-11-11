@@ -2,22 +2,23 @@
 This project is a bankaccount magnment system.
 
 it alows employees to login. employees can:
-  - create and delete users
+  - create and delete customers and create, delete and update accounts
     
 it alows customers to login. cuesomter can:
   - veiw their details
+  - veiw their accounts and account transactions
   - create transactions
 
-# Future Goals
-front end has full functonality, but needs work on it's apperence.  
-the back end has full functonality, but needs more work done to ensure invalid input is properly delt with.
+# future goals
+implement JWT for security
+add password encryption
 
 # Implementation Details
 the front end is done in react using typescript and run using vite.  
 the back end is done in java using spring boot and jpa.
 
 # run the program
-there must be a database setup as decribed in \backend\springBootAPI\src\test\resources\schema.sql
+there must be a mySQL database setup as decribed in \backend\springBootAPI\src\test\resources\schema.sql
 
 run the backend:
   - go to the springBootAPI folder (in the backend folder)
