@@ -9,12 +9,16 @@ it alows customers to login. cuesomter can:
   - veiw their accounts and account transactions
   - create transactions
 
+# future goals
+implement JWT for security
+add password encryption
+
 # Implementation Details
 the front end is done in react using typescript and run using vite.  
 the back end is done in java using spring boot and jpa.
 
 # run the program
-there must be a database setup as decribed in \backend\springBootAPI\src\test\resources\schema.sql
+there must be a mySQL database setup as decribed in \backend\springBootAPI\src\test\resources\schema.sql
 
 run the backend:
   - go to the springBootAPI folder (in the backend folder)
