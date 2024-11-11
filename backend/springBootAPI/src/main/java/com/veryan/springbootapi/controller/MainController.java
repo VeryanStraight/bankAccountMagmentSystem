@@ -40,11 +40,9 @@ public class MainController {
     @PutMapping("/user")
     public ResponseEntity<User> createUser(@RequestBody User user){
         try{
-            System.out.println("in create user");
             User createdUser = service.createUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         } catch (AlreadyExistsException | InvalidInputException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
@@ -60,11 +58,9 @@ public class MainController {
     @PutMapping("/customer")
     public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer){
         try{
-            System.out.println(customer);
             Customer createdCustomer = service.createCustomer(customer);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdCustomer);
         } catch (AlreadyExistsException | InvalidInputException e) {
-            System.out.println(e.getMessage());
             //if a duplicate key or non-existent foreign key
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -97,7 +93,6 @@ public class MainController {
     @PutMapping("/account")
     public ResponseEntity<Account> createAccount(@RequestBody Account account){
         try {
-            System.out.println(account);
             Account createdAccount = service.createAccount(account);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
         } catch (AlreadyExistsException | InvalidInputException e) {
@@ -121,16 +116,10 @@ public class MainController {
     @PutMapping("/transaction")
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction){
         try {
-            System.out.println("in create transaction");
-            System.out.println(transaction.getFromAccount());
             Transaction createdTransaction = service.createTransaction(transaction);
-            System.out.println(createdTransaction);
             ResponseEntity<Transaction> r = ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
-            System.out.println(r);
             return r;
         } catch (AlreadyExistsException | InvalidInputException | NoSuchRecordException e) {
-            System.out.println("in catch");
-            System.out.println(e.getMessage());
             //if a duplicate key or non-existent foreign key
             //if missing to/from account when they are needed based on transaction type
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
