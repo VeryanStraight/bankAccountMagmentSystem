@@ -68,6 +68,9 @@ public interface Service {
      * @throws NoSuchRecordException if the customer doesn't exist
      */
     Customer getCustomerByUsername(String username) throws NoSuchRecordException;
+
+    Customer getCustomerById(int id) throws NoSuchRecordException;
+
     /**
      * gets an employee by username
      * @param username the username

@@ -156,6 +156,20 @@ public class MainController {
     }
 
     /**
+     * an end point for getting a customer by id
+     * @param id the id
+     * @return the customer if it exists
+     */
+    @GetMapping("/customer/{id}")
+    public ResponseEntity<Customer> getCustomerById(@PathVariable int id){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(service.getCustomerById(id));
+        } catch (NoSuchRecordException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    /**
      * an end point for getting an employee by username
      * @param username the username
      * @return the employee if it exists

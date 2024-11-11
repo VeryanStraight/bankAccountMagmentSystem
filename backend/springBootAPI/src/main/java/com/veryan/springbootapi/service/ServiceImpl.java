@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -253,6 +252,13 @@ public class ServiceImpl implements com.veryan.springbootapi.service.Service {
     public Customer getCustomerByUsername(String username) throws NoSuchRecordException {
         Optional<Customer> customer = customers.findByUser_Username(username);
         if(customer.isEmpty()){throw new NoSuchRecordException("no such customer"+ username);}
+        return customer.get();
+    }
+
+    @Override
+    public Customer getCustomerById(int id) throws NoSuchRecordException {
+        Optional<Customer> customer = customers.findById(id);
+        if(customer.isEmpty()){throw new NoSuchRecordException("no such customer"+ id);}
         return customer.get();
     }
 

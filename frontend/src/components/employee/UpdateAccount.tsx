@@ -91,8 +91,10 @@ const UpdateAccount = ({ account }: Props) => {
 
       newAccount.name = formData.name;
       newAccount.status = formData.status;
+      console.log("new account:");
+      console.log(newAccount);
 
-      const updatedAccount = await axios.patch(
+      await axios.patch(
         `http://localhost:8080/api/accountSystem/account/${account.id}`,
         newAccount
       );

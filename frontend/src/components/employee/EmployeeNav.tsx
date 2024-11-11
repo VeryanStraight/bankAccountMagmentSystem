@@ -12,7 +12,7 @@ const CustomerNav = () => {
     <>
       <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand as={Link} to="/employee-dashboard">
+          <Navbar.Brand as={Link} to="/">
             <img
               src="\resources\robin.png"
               alt="Bank Logo"

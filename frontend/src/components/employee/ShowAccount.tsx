@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Alert, Button } from "react-bootstrap";
 import UpdateAccount from "./UpdateAccount";
 import { Account } from "../Account";
 import Form from "react-bootstrap/Form";
@@ -13,6 +13,7 @@ const ShowAccount = () => {
   const [formData, setFormData] = useState<number | undefined>();
   const navigate = useNavigate();
   const location = useLocation();
+  const [message, setMessage] = useState<String>();
 
   //get the user each time the username is updated
   useEffect(() => {
@@ -30,7 +31,9 @@ const ShowAccount = () => {
       console.log(res.data);
       setAccount(res.data);
       console.log("response " + res.data);
+      setMessage(undefined);
     } catch (err) {
+      setMessage("Could not find account");
       console.error("Error fetching account info:", err);
     }
   };
@@ -65,6 +68,7 @@ const ShowAccount = () => {
           </Button>
         </Form>
       </div>
+      {message && <Alert className="mt-3">{message}</Alert>}
       {account ? (
         <>
           <h2>Account</h2>
