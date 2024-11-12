@@ -1,18 +1,18 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
                        username VARCHAR(20) PRIMARY KEY,
                        name VARCHAR(40) NOT NULL,
                        email VARCHAR(50) UNIQUE,
                        phone VARCHAR(20) UNIQUE
 );
 
-CREATE TABLE employees (
+CREATE TABLE IF NOT EXISTS employees (
                            id INT PRIMARY KEY AUTO_INCREMENT,
                             password VARCHAR(50) NOT NULL,
                            username VARCHAR(20) NOT NULL UNIQUE,
                             FOREIGN KEY (username) REFERENCES users (username)
 );
 
-CREATE TABLE customers (
+CREATE TABLE IF NOT EXISTS customers (
                            id INT PRIMARY KEY AUTO_INCREMENT,
                            password VARCHAR(50) NOT NULL,
                            username VARCHAR(20) NOT NULL UNIQUE,
@@ -22,18 +22,18 @@ CREATE TABLE customers (
                             FOREIGN KEY (username) REFERENCES users (username)
 );
 
-CREATE TABLE transaction_type(
+CREATE TABLE IF NOT EXISTS transaction_type(
                                  id INT AUTO_INCREMENT PRIMARY KEY,
                                  type VARCHAR(20) UNIQUE NOT NULL
 );
 
 
-CREATE TABLE statuses(
+CREATE TABLE IF NOT EXISTS statuses(
                          id INT AUTO_INCREMENT PRIMARY KEY,
                          status VARCHAR(20) UNIQUE NOT NULL
 );
 
-CREATE TABLE accounts(
+CREATE TABLE IF NOT EXISTS accounts(
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         balance DECIMAL NOT NULL DEFAULT 0,
                         customer INT NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE accounts(
 
                         CONSTRAINT unique_customer_name UNIQUE (customer, name));
 
-CREATE TABLE transactions(
+CREATE TABLE IF NOT EXISTS transactions(
                              id INT AUTO_INCREMENT PRIMARY KEY,
                              to_account INT,
                              from_account INT,
@@ -60,7 +60,7 @@ CREATE TABLE transactions(
                              FOREIGN KEY (type) REFERENCES transaction_type (id)
 );
 
-CREATE TABLE beneficiaries(
+CREATE TABLE IF NOT EXISTS beneficiaries(
                               customer INT,
                               account INT,
                               relationship VARCHAR(40),
